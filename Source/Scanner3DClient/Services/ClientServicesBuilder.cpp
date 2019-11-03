@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "ClientServicesBuilder.h"
+#include "RemoteServices/Services/ServiceFactory.h"
+
+#include "Echo/EchoService.h"
 
 using namespace Scanner3DClient;
+using namespace Scanner3DClient::Services;
 
 void ClientServicesBuilder::OnServerConnected(const RemoteServices::IServicesControllerSharedPtr& servicesController)
 {
@@ -10,5 +14,8 @@ void ClientServicesBuilder::OnServerConnected(const RemoteServices::IServicesCon
 
 void ClientServicesBuilder::RegisterServicesFactories(const RemoteServices::IServicesControllerSharedPtr& servicesController)
 {
-    //TODO
+    if (!servicesController)
+        return;
+
+    servicesController->RegisterServiceFactory(RemoteServices::ServiceFactory<EchoService>::CreateFactory("echo"));
 }
