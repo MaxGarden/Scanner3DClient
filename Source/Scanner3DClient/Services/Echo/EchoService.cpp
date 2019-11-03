@@ -7,7 +7,8 @@ using namespace Scanner3DClient::Services;
 void EchoService::SendMessage(const std::string& message)
 {
     m_sentMessages.emplace_back(message);
-    Send(RemoteServices::ServicePayload{ message.cbegin(), message.cend() });
+    if(Send(RemoteServices::ServicePayload{ message.cbegin(), message.cend() }))
+        std::cout << "Send echo:" << message << std::endl;
 }
 
 void EchoService::OnReceived(const RemoteServices::ServicePayload& payload)
