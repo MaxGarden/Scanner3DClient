@@ -1,0 +1,4 @@
+[submodule "Dependencies/RemoteServices"]
+	path = Dependencies/RemoteServices
+	url = https://github.com/MaxGarden/RemoteServices.git
+	branch = develop
