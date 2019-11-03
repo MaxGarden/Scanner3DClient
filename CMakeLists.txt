@@ -11,6 +11,9 @@ SET(SCANNER_3D_CLIENT_SOURCES
     
     Source/Scanner3DClient/Services/ClientServicesBuilder.h
     Source/Scanner3DClient/Services/ClientServicesBuilder.cpp
+    
+    Source/Scanner3DClient/Services/Echo/EchoService.h
+    Source/Scanner3DClient/Services/Echo/EchoService.cpp
 )
 
 ADD_SUBDIRECTORY(Dependencies/RemoteServices)
