@@ -20,8 +20,8 @@ SET(SCANNER_3D_CLIENT_SOURCES
     Source/Scanner3DClient/Services/ClientServicesBuilder.h
     Source/Scanner3DClient/Services/ClientServicesBuilder.cpp
     
-    Source/Scanner3DClient/Services/Echo/EchoService.h
-    Source/Scanner3DClient/Services/Echo/EchoService.cpp
+    Source/Scanner3DClient/Services/Camera/CameraService.h
+    Source/Scanner3DClient/Services/Camera/CameraService.cpp
     
     Source/Scanner3DClient/GUI/MainWindow/MainWindow.h
     Source/Scanner3DClient/GUI/MainWindow/MainWindow.cpp
