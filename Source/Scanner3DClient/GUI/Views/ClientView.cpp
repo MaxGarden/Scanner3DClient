@@ -48,6 +48,8 @@ void ClientView::OnServerConnected(const RemoteServices::IServicesControllerShar
         return;
     }
 
+    const auto& remoteAddress = servicesController->GetRemoteAddress();
+    m_servicesViewsTabWidget->addTab(servicesView.get(), QString::fromStdString(remoteAddress));
     m_servicesViews.emplace(servicesController, std::move(servicesView));
 }
 
@@ -57,6 +59,11 @@ void ClientView::OnServerDisconnected(const RemoteServices::IServicesControllerS
     CLIENT_ASSERT(iterator != m_servicesViews.cend());
     if (iterator == m_servicesViews.cend())
         return;
+
+    const auto index = m_servicesViewsTabWidget->indexOf(iterator->second.get());
+    CLIENT_ASSERT(index != -1);
+    if (index != -1)
+        m_servicesViewsTabWidget->removeTab(index);
 
     m_servicesViews.erase(iterator);
 }
