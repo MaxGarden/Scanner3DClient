@@ -3,16 +3,17 @@
 #include <QMainWindow>
 #include "RemoteServices/DataModels/Client.h"
 #include "RemoteServices/Controllers/ClientController.h"
+#include "UI/ui_MainWindow.h"
 
 namespace Scanner3DClient::GUI
 {
-    class CMainWindow final : public QMainWindow
+    class MainWindow final : public QMainWindow, public Ui_MainWindow
     {
         Q_OBJECT
 
     public:
-        CMainWindow();
-        virtual ~CMainWindow() override final;
+        MainWindow();
+        virtual ~MainWindow() override final;
 
         bool Initialize();
         void Finalize();

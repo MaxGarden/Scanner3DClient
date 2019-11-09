@@ -8,18 +8,19 @@
 
 using namespace Scanner3DClient::GUI;
 
-CMainWindow::CMainWindow() : 
+MainWindow::MainWindow() : 
     m_updateTimer{ std::make_unique<QTimer>(this) }
 {
+    setupUi(this);
 }
 
-CMainWindow::~CMainWindow()
+MainWindow::~MainWindow()
 {
     if (m_initialized)
         Finalize();
 }
 
-bool CMainWindow::Initialize()
+bool MainWindow::Initialize()
 {
     CLIENT_ASSERT(!m_initialized);
     if (m_initialized)
@@ -47,11 +48,14 @@ bool CMainWindow::Initialize()
         return fail("Cannot create client controller.");
 
     if (!m_clientController->SetDataModel(m_client))
-        return fail("Client controller has not accepters client data model.");
+        return fail("Client controller has not accepted client data model.");
 
     auto servicesBuilder = std::make_unique<ClientServicesBuilder>();
     if (!m_clientController->RegisterListener(std::move(servicesBuilder)))
         return fail("Cannot register services builder.");
+
+    if (!m_clientView->SetController(m_clientController))
+        return fail("Client view has not accepted client controller.");
 
     if (!m_client->Initialize())
         return fail("Cannot initialize server data model.");
@@ -67,7 +71,7 @@ bool CMainWindow::Initialize()
     return (m_initialized = true);
 }
 
-void CMainWindow::Finalize()
+void MainWindow::Finalize()
 {
     CLIENT_ASSERT(m_initialized);
     if (!m_initialized)
@@ -82,7 +86,7 @@ void CMainWindow::Finalize()
     m_client.reset();
 }
 
-void CMainWindow::OnUpdateTimer()
+void MainWindow::OnUpdateTimer()
 {
     if (!m_initialized)
         return;

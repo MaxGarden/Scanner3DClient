@@ -1,11 +1,11 @@
 #include "pch.h"
 #include <QApplication>
-#include "MainWindow/MainWindow.h"
+#include "GUI/MainWindow/MainWindow.h"
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    Scanner3DClient::GUI::CMainWindow mainWindow;
+    Scanner3DClient::GUI::MainWindow mainWindow;
 
     if (!mainWindow.Initialize())
         return -1;
