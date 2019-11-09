@@ -2,13 +2,16 @@
 
 #include "MVC/ViewBase.h"
 #include "RemoteServices/Controllers/ServicesController.h"
+#include "UI/ui_ServicesView.h"
 
 #include <QWidget>
 
 namespace Scanner3DClient::GUI
 {
-    class ServicesView final : public MVC::ViewBase<MVC::IView, RemoteServices::IServicesController>, public QWidget
+    class ServicesView final : public QWidget, public MVC::ViewBase<MVC::IView, RemoteServices::IServicesController>, public Ui_ServicesView
     {
+        Q_OBJECT
+
     public:
         ServicesView(QWidget* parent);
         virtual ~ServicesView() override final = default;
@@ -18,5 +21,8 @@ namespace Scanner3DClient::GUI
 
     protected:
         virtual MVC::IListenerUniquePtr CreateListener() override final;
+
+    private slots:
+        void OnSettingsButtonClicked();
     };
 }

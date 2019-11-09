@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ServicesView.h"
+#include "GUI/SettingsDialog/SettingsDialog.h"
 #include "RemoteServices/Controllers/ServicesControllerListenerBase.h"
 
 using namespace Scanner3DClient::GUI;
@@ -35,6 +36,7 @@ void ServicesViewListener::OnServiceUnparied(RemoteServices::IService& service)
 ServicesView::ServicesView(QWidget* parent) :
     QWidget{ parent }
 {
+    setupUi(this);
 }
 
 void ServicesView::OnServicePaired(RemoteServices::IService& service)
@@ -50,4 +52,9 @@ void ServicesView::OnServiceUnparied(RemoteServices::IService& service)
 MVC::IListenerUniquePtr ServicesView::CreateListener()
 {
     return std::make_unique<ServicesViewListener>(*this);
+}
+
+void ServicesView::OnSettingsButtonClicked()
+{
+    (new SettingsDialog(this))->show();
 }
