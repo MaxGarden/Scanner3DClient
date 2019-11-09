@@ -31,6 +31,9 @@ SET(SCANNER_3D_CLIENT_SOURCES
     
     Source/Scanner3DClient/GUI/ServicesView/ServicesView.h
     Source/Scanner3DClient/GUI/ServicesView/ServicesView.cpp
+    
+    Source/Scanner3DClient/GUI/SettingsDialog/SettingsDialog.h
+    Source/Scanner3DClient/GUI/SettingsDialog/SettingsDialog.cpp
 )
 
 ADD_SUBDIRECTORY(Dependencies/RemoteServices)
