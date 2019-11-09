@@ -4,6 +4,7 @@ PROJECT(Scanner3DClient)
 SET(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTORCC ON)
 SET(CMAKE_AUTOUIC ON)
+SET(CMAKE_AUTOMOC_MOC_OPTIONS "-b<pch.h>")
 
 SET(CMAKE_CXX_STANDARD 17)
 
@@ -22,8 +23,13 @@ SET(SCANNER_3D_CLIENT_SOURCES
     Source/Scanner3DClient/Services/Echo/EchoService.h
     Source/Scanner3DClient/Services/Echo/EchoService.cpp
     
-    Source/Scanner3DClient/MainWindow/MainWindow.h
-    Source/Scanner3DClient/MainWindow/MainWindow.cpp
+    Source/Scanner3DClient/GUI/MainWindow/MainWindow.h
+    Source/Scanner3DClient/GUI/MainWindow/MainWindow.cpp
+    
+    Source/Scanner3DClient/GUI/Views/ClientView.h
+    Source/Scanner3DClient/GUI/Views/ClientView.cpp
+    Source/Scanner3DClient/GUI/Views/ServicesView.h
+    Source/Scanner3DClient/GUI/Views/ServicesView.cpp
 )
 
 ADD_SUBDIRECTORY(Dependencies/RemoteServices)
