@@ -35,7 +35,7 @@
   <customwidget>
    <class>Scanner3DClient::GUI::ClientView</class>
    <extends>QWidget</extends>
-   <header>GUI/Views/ClientView.h</header>
+   <header>GUI/ClientView/ClientView.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

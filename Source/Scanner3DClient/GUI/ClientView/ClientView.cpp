@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "ClientView.h"
-#include "ServicesView.h"
+#include "GUI/ServicesView/ServicesView.h"
 #include "RemoteServices/Controllers/ClientControllerListenerBase.h"
 
 using namespace Scanner3DClient::GUI;
