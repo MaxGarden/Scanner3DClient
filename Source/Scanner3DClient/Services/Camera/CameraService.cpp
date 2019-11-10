@@ -7,22 +7,14 @@ using namespace Scanner3DClient::Services;
 
 bool CameraService::SendGetConfigRequest(GetConfigResponseCallback&& callback)
 {
-    CLIENT_ASSERT(callback);
-    if (!callback)
-        return false;
-
     return SendRequest(Request{ 'g', {} }, [this, callback = std::move(callback)](auto&& response)
     {
         OnConfigResponse(callback, std::move(response));
     });
 }
 
-bool CameraService::SendApplyConfigResult(const CameraConfig& config, GetConfigResponseCallback&&callback)
+bool CameraService::SendApplyConfigRequest(const CameraConfig& config, GetConfigResponseCallback&&callback)
 {
-    CLIENT_ASSERT(callback);
-    if (!callback)
-        return false;
-
     const auto beginIterator = reinterpret_cast<const RemoteServices::byte*>(&config);
     const auto endIterator = beginIterator + sizeof(CameraConfig);
     auto payload = RemoteServices::ServicePayload{ beginIterator, endIterator };
@@ -33,8 +25,25 @@ bool CameraService::SendApplyConfigResult(const CameraConfig& config, GetConfigR
     });
 }
 
+bool CameraService::SendCaptureImageRequest(CaptureImageResponseCallback&& callback)
+{
+    return SendRequest(Request{ 'c', {} }, [this, callback = std::move(callback)](auto&& response)
+    {
+        if (!callback)
+            return;
+
+        if (response.Type != Response::ResponseType::Ok)
+            callback({});
+        else
+            callback(std::move(response.Payload));
+    });
+}
+
 void CameraService::OnConfigResponse(const GetConfigResponseCallback& callback, Response&& response)
 {
+    if (!callback)
+        return;
+
     if (response.Type != Response::ResponseType::Ok)
         return callback(std::nullopt);
 

@@ -19,15 +19,17 @@ namespace Scanner3DClient::Services
         };
 
         using GetConfigResponseCallback = std::function<void(std::optional<CameraConfig>)>;
+        using CaptureImageResponseCallback = std::function<void(std::vector<byte>&&)>;
 
     public:
         CameraService() = default;
         virtual ~CameraService() override final = default;
 
         bool SendGetConfigRequest(GetConfigResponseCallback&& callback);
-        bool SendApplyConfigResult(const CameraConfig& config, GetConfigResponseCallback&& callback);
+        bool SendApplyConfigRequest(const CameraConfig& config, GetConfigResponseCallback&& callback);
+        bool SendCaptureImageRequest(CaptureImageResponseCallback&& callback);
 
     private:
-        void OnConfigResponse(const GetConfigResponseCallback& callback, Response&& response);
+        static void OnConfigResponse(const GetConfigResponseCallback& callback, Response&& response);
     };
 }
