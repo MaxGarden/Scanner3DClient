@@ -4,6 +4,7 @@
 #include "UI/ui_SettingsDialog.h"
 
 #include <QDialog>
+#include <QImage>
 
 namespace Scanner3DClient::GUI
 {
@@ -22,6 +23,8 @@ namespace Scanner3DClient::GUI
         void OnCameraConfigResponse(std::optional<Services::CameraService::CameraConfig> cameraConfig);
         Services::CameraService::CameraConfig CreateCameraConfig() const noexcept;
 
+        void OnCaptureImageResponse(std::vector<byte>&& image);
+
     private slots:
         void OnISOSliderValueChanged(int value);
         void OnISOSpinBoxValueChanged(int value);
@@ -31,6 +34,8 @@ namespace Scanner3DClient::GUI
         void OnOkButtonClicked();
         void OnApplyButtonClicked();
         void OnRevertButtonClicked();
+
+        void OnRefreshPreviewButtonClicked();
 
     private:
         Services::CameraService& m_cameraService;

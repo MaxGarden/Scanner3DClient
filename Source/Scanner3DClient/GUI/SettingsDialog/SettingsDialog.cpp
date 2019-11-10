@@ -79,6 +79,20 @@ Services::CameraService::CameraConfig SettingsDialog::CreateCameraConfig() const
     return result;
 }
 
+void SettingsDialog::OnCaptureImageResponse(std::vector<byte>&& image)
+{
+    if (image.empty())
+        QMessageBox::critical(this, tr("Error"), tr("Captured image is empty!"));
+    else
+    {
+        const auto previewImage = QImage{ image.data(), m_assignedCameraConfig.Width, m_assignedCameraConfig.Height, QImage::Format_Grayscale8 };
+        m_previewLabel->setPixmap(QPixmap::fromImage(previewImage));
+        m_previewLabel->adjustSize();
+    }
+
+    m_previewGroupBox->setEnabled(true);
+}
+
 void SettingsDialog::OnISOSliderValueChanged(int value)
 {
     if (m_isoSpinBox)
@@ -109,7 +123,7 @@ void SettingsDialog::OnHeightSpinBoxValueChanged(int value)
 void SettingsDialog::OnOkButtonClicked()
 {
     auto configToApply = CreateCameraConfig();
-    const auto result = m_cameraService.SendApplyConfigResult(configToApply, [](const auto&) {});
+    const auto result = m_cameraService.SendApplyConfigRequest(configToApply, nullptr);
 
     if (!result)
         QMessageBox::critical(this, tr("Error"), tr("Cannot send apply request!"));
@@ -120,7 +134,7 @@ void SettingsDialog::OnOkButtonClicked()
 void SettingsDialog::OnApplyButtonClicked()
 {
     auto configToApply = CreateCameraConfig();
-    const auto result = m_cameraService.SendApplyConfigResult(configToApply, [this](const auto& cameraConfig)
+    const auto result = m_cameraService.SendApplyConfigRequest(configToApply, [this](const auto& cameraConfig)
     {
         if (this == s_activeSettingsDialog)
             OnCameraConfigResponse(cameraConfig);
@@ -135,4 +149,19 @@ void SettingsDialog::OnApplyButtonClicked()
 void SettingsDialog::OnRevertButtonClicked()
 {
     AssignCameraConfig(std::move(m_assignedCameraConfig));
+}
+
+void SettingsDialog::OnRefreshPreviewButtonClicked()
+{
+    const auto result = m_cameraService.SendCaptureImageRequest([this](auto&& image)
+    {
+        if (this == s_activeSettingsDialog)
+            OnCaptureImageResponse(std::move(image));
+    });
+
+    CLIENT_ASSERT(result);
+    if (!result)
+        QMessageBox::critical(this, tr("Error"), tr("Cannot send capture request!"));
+    else
+        m_previewGroupBox->setEnabled(false);
 }

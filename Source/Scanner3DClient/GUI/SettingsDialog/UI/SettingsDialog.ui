@@ -9,12 +9,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>644</width>
-    <height>300</height>
+    <width>622</width>
+    <height>724</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Settings</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -281,17 +281,43 @@
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <widget class="QGroupBox" name="m_previewGroupBox">
+     <property name="title">
+      <string>Preview</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QScrollArea" name="m_previewScrollArea">
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <widget class="QLabel" name="m_previewLabel">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>582</width>
+           <height>372</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="m_refreshPreviewPushButton">
+        <property name="text">
+         <string>Refresh</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -598,6 +624,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_refreshPreviewPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnRefreshPreviewButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>662</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>310</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OnISOSliderValueChanged(int)</slot>
@@ -607,5 +649,6 @@
   <slot>OnApplyButtonClicked()</slot>
   <slot>OnRevertButtonClicked()</slot>
   <slot>OnOkButtonClicked()</slot>
+  <slot>OnRefreshPreviewButtonClicked()</slot>
  </slots>
 </ui>
