@@ -5,6 +5,8 @@
 
 namespace Scanner3DClient
 {
+    using byte = unsigned char;
+
     #define CLIENT_ASSERT(expression) assert(expression)
 
     #define DECLARE_POINTERS(x)                                 \
