@@ -99,7 +99,7 @@
           <item>
            <widget class="QSlider" name="m_sharpnessSlider">
             <property name="minimum">
-             <number>-100</number>
+             <number>0</number>
             </property>
             <property name="maximum">
              <number>100</number>
@@ -118,7 +118,7 @@
              </size>
             </property>
             <property name="minimum">
-             <number>-100</number>
+             <number>0</number>
             </property>
             <property name="maximum">
              <number>100</number>
@@ -159,7 +159,7 @@
           <item>
            <widget class="QSlider" name="m_contrastSlider">
             <property name="minimum">
-             <number>-100</number>
+             <number>0</number>
             </property>
             <property name="maximum">
              <number>100</number>
@@ -178,7 +178,7 @@
              </size>
             </property>
             <property name="minimum">
-             <number>-100</number>
+             <number>0</number>
             </property>
             <property name="maximum">
              <number>100</number>
@@ -234,7 +234,7 @@
           <item>
            <widget class="QSlider" name="m_saturationSlider">
             <property name="minimum">
-             <number>-100</number>
+             <number>0</number>
             </property>
             <property name="maximum">
              <number>100</number>
@@ -253,7 +253,7 @@
              </size>
             </property>
             <property name="minimum">
-             <number>-100</number>
+             <number>0</number>
             </property>
             <property name="maximum">
              <number>100</number>
