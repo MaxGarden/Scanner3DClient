@@ -11,11 +11,11 @@ namespace Scanner3DClient::Services
         {
             unsigned short Width;           //multiple of 320
             unsigned short Height;          //multiple of 240
-            unsigned char Brightness;       //0 to 100
-            char Sharpness;                 //-100 to 100
-            char Contrast;                  //-100 to 100
-            unsigned short Iso;             //100 to 800
-            char Saturation;                //-100 to 100
+            byte Brightness;                //0 to 100
+            byte Sharpness;                 //0 to 100
+            byte Contrast;                  //0 to 100
+            unsigned short ISO;             //100 to 800
+            byte Saturation;                //0 to 100
         };
 
         using GetConfigResponseCallback = std::function<void(std::optional<CameraConfig>)>;
