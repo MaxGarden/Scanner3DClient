@@ -3,6 +3,7 @@
 #include "MVC/ViewBase.h"
 #include "RemoteServices/Controllers/ServicesController.h"
 #include "UI/ui_ServicesView.h"
+#include "Services/Camera/CameraService.h"
 
 #include <QWidget>
 
@@ -24,5 +25,8 @@ namespace Scanner3DClient::GUI
 
     private slots:
         void OnSettingsButtonClicked();
+
+    private:
+        Services::CameraService* m_cameraService = nullptr;
     };
 }

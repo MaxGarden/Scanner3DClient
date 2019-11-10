@@ -41,12 +41,16 @@ ServicesView::ServicesView(QWidget* parent) :
 
 void ServicesView::OnServicePaired(RemoteServices::IService& service)
 {
-    //TODO
+    const auto servicePointer = &service;
+    if (const auto cameraService = dynamic_cast<decltype(m_cameraService)>(servicePointer))
+        m_cameraService = cameraService;
 }
 
 void ServicesView::OnServiceUnparied(RemoteServices::IService& service)
 {
-    //TODO
+    const auto servicePointer = &service;
+    if (m_cameraService == servicePointer)
+        m_cameraService = nullptr;
 }
 
 MVC::IListenerUniquePtr ServicesView::CreateListener()
@@ -56,5 +60,8 @@ MVC::IListenerUniquePtr ServicesView::CreateListener()
 
 void ServicesView::OnSettingsButtonClicked()
 {
-    (new SettingsDialog(this))->show();
+    if (!m_cameraService)
+        return;
+
+    (new SettingsDialog(this, *m_cameraService))->open();
 }

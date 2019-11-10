@@ -29,14 +29,14 @@
       <item>
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="m_resolutionWidthLabel">
+         <widget class="QLabel" name="m_widthLabel">
           <property name="text">
            <string>Resolution width:</string>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="m_resolutionHeightLabel">
+         <widget class="QLabel" name="m_heightLabel">
           <property name="text">
            <string>Resolution height:</string>
           </property>
@@ -192,13 +192,16 @@
           <item>
            <widget class="QSlider" name="m_isoSlider">
             <property name="minimum">
-             <number>100</number>
+             <number>1</number>
             </property>
             <property name="maximum">
-             <number>800</number>
+             <number>8</number>
             </property>
             <property name="singleStep">
-             <number>100</number>
+             <number>1</number>
+            </property>
+            <property name="pageStep">
+             <number>1</number>
             </property>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -278,54 +281,67 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="m_buttonBox">
-     <property name="locale">
-      <locale language="English" country="UnitedStates"/>
-     </property>
+    <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_okPushButton">
+       <property name="text">
+        <string>Ok</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_cancelPushButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_applyPushButton">
+       <property name="text">
+        <string>Apply</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_revertPushButton">
+       <property name="text">
+        <string>Revert</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>m_buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>m_buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>SettingsDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>m_brightnessSlider</sender>
    <signal>valueChanged(int)</signal>
@@ -361,7 +377,7 @@
   <connection>
    <sender>m_sharpnessSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_sharpnessSlider</receiver>
+   <receiver>m_sharpnessSpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -369,7 +385,7 @@
      <y>128</y>
     </hint>
     <hint type="destinationlabel">
-     <x>340</x>
+     <x>597</x>
      <y>128</y>
     </hint>
    </hints>
@@ -425,32 +441,32 @@
   <connection>
    <sender>m_isoSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_isoSpinBox</receiver>
-   <slot>setValue(int)</slot>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnISOSliderValueChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>340</x>
      <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>597</x>
-     <y>188</y>
+     <x>321</x>
+     <y>149</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>m_isoSpinBox</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>m_isoSlider</receiver>
-   <slot>setValue(int)</slot>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnISOSpinBoxValueChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>597</x>
      <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>340</x>
-     <y>188</y>
+     <x>321</x>
+     <y>149</y>
     </hint>
    </hints>
   </connection>
@@ -486,5 +502,110 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_widthSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnWidthSpinBoxValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>368</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_heightSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnHeightSpinBoxValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>368</x>
+     <y>69</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_okPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnOkButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>353</x>
+     <y>278</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_cancelPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>434</x>
+     <y>278</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_applyPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnApplyButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>515</x>
+     <y>278</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_revertPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnRevertButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>596</x>
+     <y>278</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>321</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>OnISOSliderValueChanged(int)</slot>
+  <slot>OnISOSpinBoxValueChanged(int)</slot>
+  <slot>OnWidthSpinBoxValueChanged(int)</slot>
+  <slot>OnHeightSpinBoxValueChanged(int)</slot>
+  <slot>OnApplyButtonClicked()</slot>
+  <slot>OnRevertButtonClicked()</slot>
+  <slot>OnOkButtonClicked()</slot>
+ </slots>
 </ui>
