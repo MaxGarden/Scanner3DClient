@@ -47,8 +47,9 @@ void SettingsDialog::AssignCameraConfig(Services::CameraService::CameraConfig&& 
     m_widthSpinBox->setValue(m_assignedCameraConfig.Width);
     m_heightSpinBox->setValue(m_assignedCameraConfig.Height);
     m_brightnessSpinBox->setValue(m_assignedCameraConfig.Brightness);
+    m_sharpnessSpinBox->setValue(m_assignedCameraConfig.Sharpness);
     m_contrastSpinBox->setValue(m_assignedCameraConfig.Contrast);
-    m_isoSpinBox->setValue(m_assignedCameraConfig.Iso);
+    m_isoSpinBox->setValue(m_assignedCameraConfig.ISO);
     m_saturationSpinBox->setValue(m_assignedCameraConfig.Saturation);
 }
 
@@ -70,8 +71,9 @@ Services::CameraService::CameraConfig SettingsDialog::CreateCameraConfig() const
     result.Width = m_widthSpinBox->value();
     result.Height = m_heightSpinBox->value();
     result.Brightness = m_brightnessSpinBox->value();
+    result.Sharpness = m_sharpnessSpinBox->value();
     result.Contrast = m_contrastSpinBox->value();
-    result.Iso = m_isoSpinBox->value();
+    result.ISO = m_isoSpinBox->value();
     result.Saturation = m_saturationSpinBox->value();
 
     return result;
