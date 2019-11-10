@@ -5,19 +5,19 @@
 
 using namespace Scanner3DClient::Services;
 
-bool CameraService::SendGetConfigRequest(const GetConfigResponseCallback& callback)
+bool CameraService::SendGetConfigRequest(GetConfigResponseCallback&& callback)
 {
     CLIENT_ASSERT(callback);
     if (!callback)
         return false;
 
-    return SendRequest(Request{ 'g', {} }, [this, &callback](auto&& response)
+    return SendRequest(Request{ 'g', {} }, [this, callback = std::move(callback)](auto&& response)
     {
         OnConfigResponse(callback, std::move(response));
     });
 }
 
-bool CameraService::SendApplyConfigResult(const CameraConfig& config, const GetConfigResponseCallback& callback)
+bool CameraService::SendApplyConfigResult(const CameraConfig& config, GetConfigResponseCallback&&callback)
 {
     CLIENT_ASSERT(callback);
     if (!callback)
@@ -27,7 +27,7 @@ bool CameraService::SendApplyConfigResult(const CameraConfig& config, const GetC
     const auto endIterator = beginIterator + sizeof(CameraConfig);
     auto payload = RemoteServices::ServicePayload{ beginIterator, endIterator };
 
-    return SendRequest(Request{ 'a', std::move(payload) }, [this, &callback](auto&& response)
+    return SendRequest(Request{ 'a', std::move(payload) }, [this, callback = std::move(callback)](auto&& response)
     {
         OnConfigResponse(callback, std::move(response));
     });

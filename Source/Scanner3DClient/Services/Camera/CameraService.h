@@ -24,8 +24,8 @@ namespace Scanner3DClient::Services
         CameraService() = default;
         virtual ~CameraService() override final = default;
 
-        bool SendGetConfigRequest(const GetConfigResponseCallback& callback);
-        bool SendApplyConfigResult(const CameraConfig& config, const GetConfigResponseCallback& callback);
+        bool SendGetConfigRequest(GetConfigResponseCallback&& callback);
+        bool SendApplyConfigResult(const CameraConfig& config, GetConfigResponseCallback&& callback);
 
     private:
         void OnConfigResponse(const GetConfigResponseCallback& callback, Response&& response);
