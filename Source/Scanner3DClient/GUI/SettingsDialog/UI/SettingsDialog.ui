@@ -558,6 +558,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QRadioButton" name="m_averagedPreviewRadioButton">
+          <property name="text">
+           <string>Averaged</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -1043,6 +1050,22 @@
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
+     <y>676</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_averagedPreviewRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnPreviewTypeRadioButtonToggled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>249</x>
      <y>676</y>
     </hint>
     <hint type="destinationlabel">

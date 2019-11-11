@@ -156,7 +156,7 @@ void SettingsDialog::SetPreview(std::vector<byte>&& imageData, std::optional<QPo
 
 void SettingsDialog::RefreshPreview()
 {
-    auto callback = [this](auto&& image)
+    auto imageCallback = [this](auto&& image)
     {
         if (this == s_activeSettingsDialog)
             OnCaptureImageResponse(std::move(image));
@@ -165,9 +165,30 @@ void SettingsDialog::RefreshPreview()
     auto sendRequestResult = false;
 
     if (m_rawPreviewRadioButton->isChecked())
-        sendRequestResult = m_cameraService.SendCaptureImageRequest(std::move(callback));
+        sendRequestResult = m_cameraService.SendCaptureImageRequest(std::move(imageCallback));
     else if (m_binarizedPreviewRadioButton->isChecked())
-        sendRequestResult = m_scanerService.SendCaptureBinarizedImageRequest(std::move(callback));
+        sendRequestResult = m_scanerService.SendCaptureBinarizedImageRequest(std::move(imageCallback));
+    else if (m_averagedPreviewRadioButton->isChecked())
+    {
+        sendRequestResult = m_scanerService.SendCaptureAveragedPointsRequest([this, imageCallback = std::move(imageCallback)](auto&& points)
+        {
+            if (this != s_activeSettingsDialog)
+                return;
+
+            std::vector<byte> image;
+
+            const auto& cameraConfig = m_assignedConfig.CameraConfig;
+            image.resize(static_cast<size_t>(cameraConfig.Width) * cameraConfig.Height, 0);
+
+            for (const auto& point : points)
+            {
+                const auto index = point.Y * cameraConfig.Width + point.X;
+                image[index] = 255;
+            }
+
+            imageCallback(std::move(image));
+        });
+    }
     else
         CLIENT_ASSERT(false);
 
