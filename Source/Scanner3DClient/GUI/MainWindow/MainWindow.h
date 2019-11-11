@@ -1,9 +1,10 @@
 #pragma once
 
-#include <QMainWindow>
 #include "RemoteServices/DataModels/Client.h"
 #include "RemoteServices/Controllers/ClientController.h"
 #include "UI/ui_MainWindow.h"
+
+#include <QMainWindow>
 
 namespace Scanner3DClient::GUI
 {
@@ -20,6 +21,7 @@ namespace Scanner3DClient::GUI
 
     private slots:
         void OnUpdateTimer();
+        void OnConnectToScannerTrigger();
 
     private:
         bool m_initialized = false;

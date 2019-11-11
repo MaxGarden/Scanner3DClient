@@ -20,7 +20,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
+  <widget class="QMenuBar" name="m_menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -29,7 +29,25 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="m_scannerMenu">
+    <property name="title">
+     <string>Scanner</string>
+    </property>
+    <addaction name="m_connectToScannerAction"/>
+   </widget>
+   <addaction name="m_scannerMenu"/>
   </widget>
+  <action name="m_connectToScannerAction">
+   <property name="text">
+    <string>Connect</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -40,5 +58,25 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>m_connectToScannerAction</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>OnConnectToScannerTrigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>OnConnectToScannerTrigger()</slot>
+ </slots>
 </ui>

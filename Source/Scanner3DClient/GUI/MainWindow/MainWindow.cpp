@@ -2,6 +2,7 @@
 #include "MainWindow.h"
 #include "Networking/Client/WebSocketClient.h"
 #include "Services/ClientServicesBuilder.h"
+#include "GUI/ConnectDialog/ConnectDialog.h"
 
 #include <QTimer>
 #include <QMessageBox>
@@ -60,9 +61,6 @@ bool MainWindow::Initialize()
     if (!m_client->Initialize())
         return fail("Cannot initialize server data model.");
 
-    if (!m_client->ConnectToServer("localhost", 50485, 500u))
-        return fail("Cannot connect to server.");
-
     if (!connect(m_updateTimer.get(), SIGNAL(timeout()), this, SLOT(OnUpdateTimer())))
         return fail("Cannot connect update timer.");
 
@@ -93,4 +91,12 @@ void MainWindow::OnUpdateTimer()
 
     if (m_client)
         m_client->Update();
+}
+
+void MainWindow::OnConnectToScannerTrigger()
+{
+    const auto settingsDialog = new ConnectDialog{ this, *m_client };
+
+    settingsDialog->setAttribute(Qt::WA_DeleteOnClose);
+    settingsDialog->open();
 }
