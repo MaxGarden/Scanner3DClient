@@ -936,6 +936,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_originXSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnRefreshPreviewOrigin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>579</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_originYSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnRefreshPreviewOrigin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>677</x>
+     <y>126</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OnISOSliderValueChanged(int)</slot>
@@ -947,5 +979,6 @@
   <slot>OnOkButtonClicked()</slot>
   <slot>OnRefreshPreviewButtonClicked()</slot>
   <slot>OnShowAdvancedScannerConfigChanged(int)</slot>
+  <slot>OnRefreshPreviewOrigin()</slot>
  </slots>
 </ui>

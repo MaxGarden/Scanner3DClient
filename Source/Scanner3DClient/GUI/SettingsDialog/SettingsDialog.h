@@ -26,6 +26,12 @@ namespace Scanner3DClient::GUI
 
         void OnCaptureImageResponse(std::vector<byte>&& image);
 
+    protected:
+        virtual void mouseDoubleClickEvent(QMouseEvent* event) override final;
+
+    private:
+        void SetPreview(std::vector<byte>&& imageData, std::optional<QPoint> newOrigin = std::nullopt);
+
     private slots:
         void OnISOSliderValueChanged(int value);
         void OnISOSpinBoxValueChanged(int value);
@@ -40,11 +46,15 @@ namespace Scanner3DClient::GUI
         
         void OnShowAdvancedScannerConfigChanged(int state);
 
+        void OnRefreshPreviewOrigin();
+
     private:
         Services::ConfigService& m_configService;
         Services::CameraService& m_cameraService;
 
         Services::ConfigService::Config m_assignedConfig = {};
+
+        std::vector<byte> m_imageData;
 
         static SettingsDialog* s_activeSettingsDialog;
     };

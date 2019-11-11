@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "SettingsDialog.h"
 
+#include <QPainter>
 #include <QMessageBox>
+#include <QMouseEvent>
 
 using namespace Scanner3DClient;
 using namespace Scanner3DClient::GUI;
@@ -105,12 +107,49 @@ void SettingsDialog::OnCaptureImageResponse(std::vector<byte>&& image)
     else
     {
         const auto& cameraConfig = m_assignedConfig.CameraConfig;
-        const auto previewImage = QImage{ image.data(), cameraConfig.Width, cameraConfig.Height, QImage::Format_Grayscale8 };
-        m_previewLabel->setPixmap(QPixmap::fromImage(previewImage));
-        m_previewLabel->adjustSize();
+        SetPreview(std::move(image));
     }
 
     m_previewGroupBox->setEnabled(true);
+}
+
+void SettingsDialog::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    const auto& globalPosition = event->globalPos();
+    const auto newOrigin = m_previewLabel->mapFromGlobal(globalPosition);
+
+    m_originXSpinBox->setValue(newOrigin.x());
+    m_originYSpinBox->setValue(newOrigin.y());
+
+    QDialog::mouseDoubleClickEvent(event);
+}
+
+void SettingsDialog::SetPreview(std::vector<byte>&& imageData, std::optional<QPoint> newOrigin)
+{
+    const auto& cameraConfig = m_assignedConfig.CameraConfig;
+    m_imageData = std::move(imageData);
+
+    auto imagePixmap = QPixmap::fromImage(QImage{ m_imageData.data(), cameraConfig.Width, cameraConfig.Height, QImage::Format_Grayscale8 });
+
+    const auto drawPointer = [this, &imagePixmap](QPoint position, const auto& color)
+    {
+        if (position.x() < 0 || position.y() < 0 || position.x() >= imagePixmap.width() || position.y() >= imagePixmap.height())
+            return;
+
+        QPainter imagePainter{ &imagePixmap };
+        imagePainter.setPen(color);
+        imagePainter.drawPoint(position);
+        imagePainter.drawEllipse(position, 10, 10);
+    };
+
+    if (newOrigin)
+        drawPointer(*newOrigin, QColor::fromRgbF(1.0f, 0.0f, 0.0f));
+
+    const auto& origin = m_assignedConfig.ScannerConfig.Origin;
+    drawPointer({ origin.X, origin.Y }, QColor::fromRgbF(0.0f, 1.0f, 0.0f));
+
+    m_previewLabel->setPixmap(imagePixmap);
+    m_previewLabel->adjustSize();
 }
 
 void SettingsDialog::OnISOSliderValueChanged(int value)
@@ -189,4 +228,15 @@ void SettingsDialog::OnRefreshPreviewButtonClicked()
 void SettingsDialog::OnShowAdvancedScannerConfigChanged(int state)
 {
     m_scannerConfigAdvancedWidget->setVisible(state == Qt::Checked);
+}
+
+void SettingsDialog::OnRefreshPreviewOrigin()
+{
+    const auto& cameraConfig = m_assignedConfig.CameraConfig;
+
+    const auto& newOriginX = static_cast<unsigned short>(m_originXSpinBox->value());
+    const auto& newOriginY = static_cast<unsigned short>(m_originYSpinBox->value());
+
+    if (newOriginX >= 0 && newOriginY >= 0 && newOriginX < cameraConfig.Width && newOriginY <= cameraConfig.Height)
+        SetPreview(std::move(m_imageData), std::make_optional<QPoint>(newOriginX, newOriginY));
 }
