@@ -42,14 +42,18 @@ ServicesView::ServicesView(QWidget* parent) :
 void ServicesView::OnServicePaired(RemoteServices::IService& service)
 {
     const auto servicePointer = &service;
-    if (const auto cameraService = dynamic_cast<decltype(m_cameraService)>(servicePointer))
+    if (const auto configService = dynamic_cast<decltype(m_configService)>(servicePointer))
+        m_configService = configService;
+    else if (const auto cameraService = dynamic_cast<decltype(m_cameraService)>(servicePointer))
         m_cameraService = cameraService;
 }
 
 void ServicesView::OnServiceUnparied(RemoteServices::IService& service)
 {
     const auto servicePointer = &service;
-    if (m_cameraService == servicePointer)
+    if (m_configService == servicePointer)
+        m_configService = nullptr;
+    else if (m_cameraService == servicePointer)
         m_cameraService = nullptr;
 }
 
@@ -63,5 +67,5 @@ void ServicesView::OnSettingsButtonClicked()
     if (!m_cameraService)
         return;
 
-    (new SettingsDialog(this, *m_cameraService))->open();
+    (new SettingsDialog(this, *m_configService, *m_cameraService))->open();
 }
