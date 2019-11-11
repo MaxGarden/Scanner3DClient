@@ -2,6 +2,7 @@
 
 #include "Services/Config/ConfigService.h"
 #include "Services/Camera/CameraService.h"
+#include "Services/Scanner/ScannerService.h"
 #include "UI/ui_SettingsDialog.h"
 
 #include <QDialog>
@@ -14,7 +15,7 @@ namespace Scanner3DClient::GUI
         Q_OBJECT
 
     public:
-        SettingsDialog(QWidget* parent, Services::ConfigService& configService, Services::CameraService& cameraService);
+        SettingsDialog(QWidget* parent, Services::ScannerService& scannerService, Services::ConfigService& configService, Services::CameraService& cameraService);
         virtual ~SettingsDialog() override final;
 
         virtual void open() override final;
@@ -31,6 +32,7 @@ namespace Scanner3DClient::GUI
 
     private:
         void SetPreview(std::vector<byte>&& imageData, std::optional<QPoint> newOrigin = std::nullopt);
+        void RefreshPreview();
 
     private slots:
         void OnISOSliderValueChanged(int value);
@@ -47,10 +49,12 @@ namespace Scanner3DClient::GUI
         void OnShowAdvancedScannerConfigChanged(int state);
 
         void OnRefreshPreviewOrigin();
+        void OnPreviewTypeRadioButtonToggled(bool toggled);
 
     private:
         Services::ConfigService& m_configService;
         Services::CameraService& m_cameraService;
+        Services::ScannerService& m_scanerService;
 
         Services::ConfigService::Config m_assignedConfig = {};
 

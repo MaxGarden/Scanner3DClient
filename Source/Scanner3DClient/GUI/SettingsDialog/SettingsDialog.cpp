@@ -10,8 +10,9 @@ using namespace Scanner3DClient::GUI;
 
 SettingsDialog* SettingsDialog::s_activeSettingsDialog = nullptr;
 
-SettingsDialog::SettingsDialog(QWidget* parent, Services::ConfigService& configService, Services::CameraService& cameraService) :
+SettingsDialog::SettingsDialog(QWidget* parent, Services::ScannerService& scannerService, Services::ConfigService& configService, Services::CameraService& cameraService) :
     QDialog{ parent },
+    m_scanerService{ scannerService },
     m_configService{ configService },
     m_cameraService{ cameraService }
 {
@@ -40,6 +41,7 @@ void SettingsDialog::open()
     if (!result)
         close();
 
+    RefreshPreview();
     return QDialog::show();
 }
 
@@ -152,6 +154,30 @@ void SettingsDialog::SetPreview(std::vector<byte>&& imageData, std::optional<QPo
     m_previewLabel->adjustSize();
 }
 
+void SettingsDialog::RefreshPreview()
+{
+    auto callback = [this](auto&& image)
+    {
+        if (this == s_activeSettingsDialog)
+            OnCaptureImageResponse(std::move(image));
+    };
+
+    auto sendRequestResult = false;
+
+    if (m_rawPreviewRadioButton->isChecked())
+        sendRequestResult = m_cameraService.SendCaptureImageRequest(std::move(callback));
+    else if (m_binarizedPreviewRadioButton->isChecked())
+        sendRequestResult = m_scanerService.SendCaptureBinarizedImageRequest(std::move(callback));
+    else
+        CLIENT_ASSERT(false);
+
+    CLIENT_ASSERT(sendRequestResult);
+    if (!sendRequestResult)
+        QMessageBox::critical(this, tr("Error"), tr("Cannot send capture request!"));
+    else
+        m_previewGroupBox->setEnabled(false);
+}
+
 void SettingsDialog::OnISOSliderValueChanged(int value)
 {
     if (m_isoSpinBox)
@@ -202,7 +228,10 @@ void SettingsDialog::OnApplyButtonClicked()
     if (!result)
         QMessageBox::critical(this, tr("Error"), tr("Cannot send apply request!"));
     else
+    {
         setEnabled(false);
+        RefreshPreview();
+    }
 }
 
 void SettingsDialog::OnRevertButtonClicked()
@@ -212,17 +241,7 @@ void SettingsDialog::OnRevertButtonClicked()
 
 void SettingsDialog::OnRefreshPreviewButtonClicked()
 {
-    const auto result = m_cameraService.SendCaptureImageRequest([this](auto&& image)
-    {
-        if (this == s_activeSettingsDialog)
-            OnCaptureImageResponse(std::move(image));
-    });
-
-    CLIENT_ASSERT(result);
-    if (!result)
-        QMessageBox::critical(this, tr("Error"), tr("Cannot send capture request!"));
-    else
-        m_previewGroupBox->setEnabled(false);
+    RefreshPreview();
 }
 
 void SettingsDialog::OnShowAdvancedScannerConfigChanged(int state)
@@ -239,4 +258,10 @@ void SettingsDialog::OnRefreshPreviewOrigin()
 
     if (newOriginX >= 0 && newOriginY >= 0 && newOriginX < cameraConfig.Width && newOriginY <= cameraConfig.Height)
         SetPreview(std::move(m_imageData), std::make_optional<QPoint>(newOriginX, newOriginY));
+}
+
+void SettingsDialog::OnPreviewTypeRadioButtonToggled(bool toggled)
+{
+    if (toggled)
+        RefreshPreview();
 }

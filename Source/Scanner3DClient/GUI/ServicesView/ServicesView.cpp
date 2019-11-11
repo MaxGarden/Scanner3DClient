@@ -39,22 +39,45 @@ ServicesView::ServicesView(QWidget* parent) :
     setupUi(this);
 }
 
+
 void ServicesView::OnServicePaired(RemoteServices::IService& service)
 {
-    const auto servicePointer = &service;
-    if (const auto configService = dynamic_cast<decltype(m_configService)>(servicePointer))
-        m_configService = configService;
-    else if (const auto cameraService = dynamic_cast<decltype(m_cameraService)>(servicePointer))
-        m_cameraService = cameraService;
+    const auto tryAssingService = [&service](auto*& servicePointer)
+    {
+        const auto castedService = dynamic_cast<std::remove_reference<decltype(servicePointer)>::type>(&service);
+        if (!castedService)
+            return false;
+
+        CLIENT_ASSERT(!servicePointer);
+        servicePointer = castedService;
+        return true;
+    };
+
+    const auto result = tryAssingService(m_configService) 
+        || tryAssingService(m_cameraService) 
+        || tryAssingService(m_scannerService);
+
+    CLIENT_ASSERT(result);
 }
 
 void ServicesView::OnServiceUnparied(RemoteServices::IService& service)
 {
-    const auto servicePointer = &service;
-    if (m_configService == servicePointer)
-        m_configService = nullptr;
-    else if (m_cameraService == servicePointer)
-        m_cameraService = nullptr;
+    const auto tryUnassingService = [&service](auto*& servicePointer)
+    {
+        if (servicePointer == &service)
+        {
+            servicePointer = nullptr;
+            return true;
+        }
+
+        return false;
+    };
+
+    const auto result = tryUnassingService(m_configService)
+        || tryUnassingService(m_cameraService)
+        || tryUnassingService(m_scannerService);
+
+    CLIENT_ASSERT(result);
 }
 
 MVC::IListenerUniquePtr ServicesView::CreateListener()
@@ -64,8 +87,8 @@ MVC::IListenerUniquePtr ServicesView::CreateListener()
 
 void ServicesView::OnSettingsButtonClicked()
 {
-    if (!m_cameraService)
+    if (!m_scannerService || !m_configService || !m_cameraService)
         return;
 
-    (new SettingsDialog(this, *m_configService, *m_cameraService))->open();
+    (new SettingsDialog(this, *m_scannerService, *m_configService, *m_cameraService))->open();
 }

@@ -5,6 +5,7 @@
 #include "UI/ui_ServicesView.h"
 #include "Services/Config/ConfigService.h"
 #include "Services/Camera/CameraService.h"
+#include "Services/Scanner/ScannerService.h"
 
 #include <QWidget>
 
@@ -30,5 +31,6 @@ namespace Scanner3DClient::GUI
     private:
         Services::ConfigService* m_configService = nullptr;
         Services::CameraService* m_cameraService = nullptr;
+        Services::ScannerService* m_scannerService = nullptr;
     };
 }
