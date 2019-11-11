@@ -90,5 +90,8 @@ void ServicesView::OnSettingsButtonClicked()
     if (!m_scannerService || !m_configService || !m_cameraService)
         return;
 
-    (new SettingsDialog(this, *m_scannerService, *m_configService, *m_cameraService))->open();
+    const auto settingsDialog = new SettingsDialog{ this, *m_scannerService, *m_configService, *m_cameraService };
+    
+    settingsDialog->setAttribute(Qt::WA_DeleteOnClose);
+    settingsDialog->open();
 }
