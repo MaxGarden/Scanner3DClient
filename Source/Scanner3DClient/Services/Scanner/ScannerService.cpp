@@ -16,3 +16,25 @@ bool ScannerService::SendCaptureBinarizedImageRequest(CaptureBinarizedImageRespo
             callback(std::move(response.Payload));
     });
 }
+
+bool ScannerService::SendCaptureAveragedPointsRequest(CaptureAveragedPointsResponseCallback&& callback)
+{
+    return SendRequest(Request{ 'a', {} }, [this, callback = std::move(callback)](auto&& response)
+    {
+        if (!callback)
+            return;
+
+        if (response.Type != Response::ResponseType::Ok)
+            return callback({});
+
+        auto& payload = response.Payload;
+        CLIENT_ASSERT(payload.size() % sizeof(Point) == 0);
+        if (payload.size() % sizeof(Point) != 0)
+            return callback({});
+
+        const auto beginIterator = reinterpret_cast<const Point*>(payload.data());
+        const auto endIterator = beginIterator + payload.size() / sizeof(Point);
+
+        callback(std::vector<Point>{ beginIterator, endIterator });
+    });
+}
