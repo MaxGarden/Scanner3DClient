@@ -2,6 +2,7 @@
 #include "ClientServicesBuilder.h"
 #include "RemoteServices/Services/ServiceFactory.h"
 
+#include "Config/ConfigService.h"
 #include "Camera/CameraService.h"
 
 using namespace Scanner3DClient;
@@ -17,5 +18,6 @@ void ClientServicesBuilder::RegisterServicesFactories(const RemoteServices::ISer
     if (!servicesController)
         return;
 
+    servicesController->RegisterServiceFactory(RemoteServices::ServiceFactory<ConfigService>::CreateFactory("config"));
     servicesController->RegisterServiceFactory(RemoteServices::ServiceFactory<CameraService>::CreateFactory("camera"));
 }
