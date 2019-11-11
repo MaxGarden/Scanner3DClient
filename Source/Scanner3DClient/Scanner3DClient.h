@@ -3,6 +3,9 @@
 #include <assert.h>
 #include <memory>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 namespace Scanner3DClient
 {
     using byte = unsigned char;
