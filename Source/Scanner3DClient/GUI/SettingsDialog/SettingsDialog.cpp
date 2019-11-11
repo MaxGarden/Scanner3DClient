@@ -53,6 +53,14 @@ void SettingsDialog::AssignConfig(Services::ConfigService::Config&& config)
     m_contrastSpinBox->setValue(cameraConfig.Contrast);
     m_isoSpinBox->setValue(cameraConfig.ISO);
     m_saturationSpinBox->setValue(cameraConfig.Saturation);
+
+    const auto& scannerConfig = m_assignedConfig.ScannerConfig;
+    m_binarizationTresholdMinSpinBox->setValue(scannerConfig.TresholdMin);
+    m_binarizationTresholdMaxSpinBox->setValue(scannerConfig.TresholdMax);
+    m_originXSpinBox->setValue(scannerConfig.Origin.X);
+    m_originYSpinBox->setValue(scannerConfig.Origin.Y);
+    m_cameraLaserInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.CameraLaserInclinationInRad) * 180.0 / M_PI);
+    m_axisCameraInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.AxisCameraInclinationInRad) * 180.0 / M_PI);
 }
 
 void SettingsDialog::OnConfigResponse(std::optional<Services::ConfigService::Config> cameraConfig)
@@ -69,15 +77,23 @@ void SettingsDialog::OnConfigResponse(std::optional<Services::ConfigService::Con
 Services::ConfigService::Config SettingsDialog::CreateConfig() const noexcept
 {
     auto result = m_assignedConfig;
-    auto& cameraConfig = result.CameraConfig;
 
-    cameraConfig.Width = m_widthSpinBox->value();
-    cameraConfig.Height = m_heightSpinBox->value();
-    cameraConfig.Brightness = m_brightnessSpinBox->value();
-    cameraConfig.Sharpness = m_sharpnessSpinBox->value();
-    cameraConfig.Contrast = m_contrastSpinBox->value();
-    cameraConfig.ISO = m_isoSpinBox->value();
-    cameraConfig.Saturation = m_saturationSpinBox->value();
+    auto& cameraConfig = result.CameraConfig;
+    cameraConfig.Width = static_cast<unsigned short>(m_widthSpinBox->value());
+    cameraConfig.Height = static_cast<unsigned short>(m_heightSpinBox->value());
+    cameraConfig.Brightness = static_cast<byte>(m_brightnessSpinBox->value());
+    cameraConfig.Sharpness = static_cast<byte>(m_sharpnessSpinBox->value());
+    cameraConfig.Contrast = static_cast<byte>(m_contrastSpinBox->value());
+    cameraConfig.ISO = static_cast<unsigned short>(m_isoSpinBox->value());
+    cameraConfig.Saturation = static_cast<byte>(m_saturationSpinBox->value());
+
+    auto& scannerConfig = result.ScannerConfig;
+    scannerConfig.TresholdMin = static_cast<byte>(m_binarizationTresholdMinSpinBox->value());
+    scannerConfig.TresholdMax = static_cast<byte>(m_binarizationTresholdMaxSpinBox->value());
+    scannerConfig.Origin.X = static_cast<unsigned short>(m_originXSpinBox->value());
+    scannerConfig.Origin.Y = static_cast<unsigned short>(m_originYSpinBox->value());
+    scannerConfig.CameraLaserInclinationInRad = static_cast<float>(m_cameraLaserInclinationDoubleSpinBox->value() * M_PI / 180.0);
+    scannerConfig.AxisCameraInclinationInRad = static_cast<float>(m_axisCameraInclinationDoubleSpinBox->value() * M_PI / 180.0);
 
     return result;
 }
@@ -168,4 +184,9 @@ void SettingsDialog::OnRefreshPreviewButtonClicked()
         QMessageBox::critical(this, tr("Error"), tr("Cannot send capture request!"));
     else
         m_previewGroupBox->setEnabled(false);
+}
+
+void SettingsDialog::OnShowAdvancedScannerConfigChanged(int state)
+{
+    m_scannerConfigAdvancedWidget->setVisible(state == Qt::Checked);
 }

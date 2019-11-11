@@ -31,8 +31,8 @@ namespace Scanner3DClient::Services
                     unsigned short Y;
                 } Origin;
 
-                float CameraLaserAngleInRad;
-                float AxisCameraAngleInRad;
+                float CameraLaserInclinationInRad;
+                float AxisCameraInclinationInRad;
             } ScannerConfig;
         };
 

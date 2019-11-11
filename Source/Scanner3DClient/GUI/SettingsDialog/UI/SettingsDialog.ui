@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>622</width>
-    <height>724</height>
+    <width>746</width>
+    <height>769</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -71,7 +71,7 @@
          </widget>
         </item>
         <item row="6" column="0">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="m_saturationLabel">
           <property name="text">
            <string>Saturation:</string>
           </property>
@@ -277,6 +277,222 @@
         </item>
        </layout>
       </item>
+      <item>
+       <widget class="QGroupBox" name="m_scannerConfigGroupBox">
+        <property name="title">
+         <string>Scanner config</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="m_binarizationTresholdMinLabel">
+             <property name="text">
+              <string>Binarization treshold (min):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QSlider" name="m_binarizationTresholdMinSlider">
+               <property name="maximum">
+                <number>255</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="m_binarizationTresholdMinSpinBox">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximum">
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="m_binarizationTresholdMaxLabel">
+             <property name="text">
+              <string>Binarization treshold (max):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QSlider" name="m_binarizationTresholdMaxSlider">
+               <property name="maximum">
+                <number>255</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="m_binarizationTresholdMaxSpinBox">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximum">
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="m_originLabel">
+             <property name="text">
+              <string>Origin:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QLabel" name="m_originXLabel">
+               <property name="maximumSize">
+                <size>
+                 <width>10</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>X:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="m_originXSpinBox">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="maximum">
+                <number>65535</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="m_originYLabel">
+               <property name="maximumSize">
+                <size>
+                 <width>10</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Y:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="m_originYSpinBox">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="maximum">
+                <number>65535</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="m_showAdvancedCheckBox">
+           <property name="text">
+            <string>Show advanced</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="m_scannerConfigAdvancedWidget" native="true">
+           <property name="visible">
+            <bool>false</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <layout class="QFormLayout" name="m_advancedConfigFromLayout">
+              <item row="1" column="0">
+               <widget class="QLabel" name="m_axisCameraInclinationLabel">
+                <property name="text">
+                 <string>Axis - camera inclination (in deg):</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QDoubleSpinBox" name="m_cameraLaserInclinationDoubleSpinBox">
+                <property name="maximum">
+                 <double>90.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QDoubleSpinBox" name="m_axisCameraInclinationDoubleSpinBox">
+                <property name="maximum">
+                 <double>90.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="m_cameraLaserInclinationLabel">
+                <property name="text">
+                 <string>Camera - laser inclination (in deg):</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -299,8 +515,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>582</width>
-           <height>372</height>
+           <width>706</width>
+           <height>417</height>
           </rect>
          </property>
          <property name="text">
@@ -640,6 +856,86 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_showAdvancedCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnShowAdvancedScannerConfigChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>273</x>
+     <y>369</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_binarizationTresholdMinSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>m_binarizationTresholdMinSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>643</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>757</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_binarizationTresholdMinSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>m_binarizationTresholdMinSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>757</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>643</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_binarizationTresholdMaxSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>m_binarizationTresholdMaxSpinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>643</x>
+     <y>97</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>757</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_binarizationTresholdMaxSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>m_binarizationTresholdMaxSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>757</x>
+     <y>97</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>643</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OnISOSliderValueChanged(int)</slot>
@@ -650,5 +946,6 @@
   <slot>OnRevertButtonClicked()</slot>
   <slot>OnOkButtonClicked()</slot>
   <slot>OnRefreshPreviewButtonClicked()</slot>
+  <slot>OnShowAdvancedScannerConfigChanged(int)</slot>
  </slots>
 </ui>

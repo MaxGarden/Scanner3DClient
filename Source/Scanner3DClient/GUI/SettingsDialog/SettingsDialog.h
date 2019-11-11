@@ -37,6 +37,8 @@ namespace Scanner3DClient::GUI
         void OnRevertButtonClicked();
 
         void OnRefreshPreviewButtonClicked();
+        
+        void OnShowAdvancedScannerConfigChanged(int state);
 
     private:
         Services::ConfigService& m_configService;
