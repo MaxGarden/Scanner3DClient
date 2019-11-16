@@ -29,6 +29,9 @@ SET(SCANNER_3D_CLIENT_SOURCES
     Source/Scanner3DClient/Services/Scanner/ScannerService.h
     Source/Scanner3DClient/Services/Scanner/ScannerService.cpp
     
+    Source/Scanner3DClient/Services/Tray/TrayService.h
+    Source/Scanner3DClient/Services/Tray/TrayService.cpp
+    
     Source/Scanner3DClient/GUI/MainWindow/MainWindow.h
     Source/Scanner3DClient/GUI/MainWindow/MainWindow.cpp
     
