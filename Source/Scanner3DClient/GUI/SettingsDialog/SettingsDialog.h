@@ -39,6 +39,8 @@ namespace Scanner3DClient::GUI
         void OnISOSpinBoxValueChanged(int value);
         void OnWidthSpinBoxValueChanged(int value);
         void OnHeightSpinBoxValueChanged(int value);
+        void OnRotationSliderValueChanged(int value);
+        void OnRotationSpinBoxValueChanged(int value);
 
         void OnOkButtonClicked();
         void OnApplyButtonClicked();

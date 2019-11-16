@@ -305,6 +305,55 @@
           </property>
          </widget>
         </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="m_rotationLabel">
+          <property name="text">
+           <string>Rotation:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_14">
+          <item>
+           <widget class="QSlider" name="m_rotationSlider">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="maximum">
+             <number>3</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="m_rotationSpinBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximum">
+             <number>270</number>
+            </property>
+            <property name="singleStep">
+             <number>90</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
        </layout>
       </item>
       <item>
@@ -558,7 +607,7 @@
            <x>0</x>
            <y>0</y>
            <width>706</width>
-           <height>387</height>
+           <height>357</height>
           </rect>
          </property>
          <property name="text">
@@ -1116,6 +1165,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_rotationSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnRotationSliderValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_rotationSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>OnRotationSpinBoxValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>342</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OnISOSliderValueChanged(int)</slot>
@@ -1129,5 +1210,7 @@
   <slot>OnShowAdvancedScannerConfigChanged(int)</slot>
   <slot>OnRefreshPreviewOrigin()</slot>
   <slot>OnPreviewTypeRadioButtonToggled(bool)</slot>
+  <slot>OnRotationSliderValueChanged(int)</slot>
+  <slot>OnRotationSpinBoxValueChanged(int)</slot>
  </slots>
 </ui>

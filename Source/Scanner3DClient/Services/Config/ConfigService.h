@@ -18,6 +18,7 @@ namespace Scanner3DClient::Services
                 byte Contrast;                  //0 to 100
                 unsigned short ISO;             //100 to 800
                 byte Saturation;                //0 to 100
+                unsigned short Rotation;        //0 to 359
             } CameraConfig;
 
             struct ScannerConfig

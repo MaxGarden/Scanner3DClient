@@ -41,7 +41,6 @@ void SettingsDialog::open()
     if (!result)
         close();
 
-    RefreshPreview();
     return QDialog::show();
 }
 
@@ -57,6 +56,7 @@ void SettingsDialog::AssignConfig(Services::ConfigService::Config&& config)
     m_contrastSpinBox->setValue(cameraConfig.Contrast);
     m_isoSpinBox->setValue(cameraConfig.ISO);
     m_saturationSpinBox->setValue(cameraConfig.Saturation);
+    m_rotationSpinBox->setValue(cameraConfig.Rotation);
 
     const auto& scannerConfig = m_assignedConfig.ScannerConfig;
     m_binarizationTresholdMinSpinBox->setValue(scannerConfig.TresholdMin);
@@ -74,6 +74,7 @@ void SettingsDialog::OnConfigResponse(std::optional<Services::ConfigService::Con
         close();
 
     AssignConfig(std::move(*cameraConfig));
+    RefreshPreview();
 
     setEnabled(true);
 }
@@ -90,6 +91,7 @@ Services::ConfigService::Config SettingsDialog::CreateConfig() const noexcept
     cameraConfig.Contrast = static_cast<byte>(m_contrastSpinBox->value());
     cameraConfig.ISO = static_cast<unsigned short>(m_isoSpinBox->value());
     cameraConfig.Saturation = static_cast<byte>(m_saturationSpinBox->value());
+    cameraConfig.Rotation = static_cast<unsigned short>(m_rotationSpinBox->value());
 
     auto& scannerConfig = result.ScannerConfig;
     scannerConfig.TresholdMin = static_cast<byte>(m_binarizationTresholdMinSpinBox->value());
@@ -201,8 +203,7 @@ void SettingsDialog::RefreshPreview()
 
 void SettingsDialog::OnISOSliderValueChanged(int value)
 {
-    if (m_isoSpinBox)
-        m_isoSpinBox->setValue(value * 100);
+    m_isoSpinBox->setValue(value * 100);
 }
 
 static int AdjustValue(int value, int step)
@@ -224,6 +225,17 @@ void SettingsDialog::OnWidthSpinBoxValueChanged(int value)
 void SettingsDialog::OnHeightSpinBoxValueChanged(int value)
 {
     m_heightSpinBox->setValue(AdjustValue(value, 240));
+}
+
+void SettingsDialog::OnRotationSliderValueChanged(int value)
+{
+    m_rotationSpinBox->setValue(value * 90);
+}
+
+void SettingsDialog::OnRotationSpinBoxValueChanged(int value)
+{
+    m_rotationSlider->setValue(value / 90);
+    m_rotationSpinBox->setValue(AdjustValue(value, 90));
 }
 
 void SettingsDialog::OnOkButtonClicked()
@@ -249,10 +261,7 @@ void SettingsDialog::OnApplyButtonClicked()
     if (!result)
         QMessageBox::critical(this, tr("Error"), tr("Cannot send apply request!"));
     else
-    {
         setEnabled(false);
-        RefreshPreview();
-    }
 }
 
 void SettingsDialog::OnRevertButtonClicked()
