@@ -5,6 +5,7 @@
 #include "Config/ConfigService.h"
 #include "Camera/CameraService.h"
 #include "Scanner/ScannerService.h"
+#include "Tray/TrayService.h"
 
 using namespace Scanner3DClient;
 using namespace Scanner3DClient::Services;
@@ -22,4 +23,5 @@ void ClientServicesBuilder::RegisterServicesFactories(const RemoteServices::ISer
     servicesController->RegisterServiceFactory(RemoteServices::ServiceFactory<ConfigService>::CreateFactory("config"));
     servicesController->RegisterServiceFactory(RemoteServices::ServiceFactory<CameraService>::CreateFactory("camera"));
     servicesController->RegisterServiceFactory(RemoteServices::ServiceFactory<ScannerService>::CreateFactory("scanner"));
+    servicesController->RegisterServiceFactory(RemoteServices::ServiceFactory<TrayService>::CreateFactory("tray"));
 }
