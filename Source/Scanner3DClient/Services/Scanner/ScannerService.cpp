@@ -5,7 +5,7 @@ using namespace Scanner3DClient::Services;
 
 bool ScannerService::SendCaptureBinarizedImageRequest(CaptureBinarizedImageResponseCallback&& callback)
 {
-    return SendRequest(Request{ 'b', {} }, [this, callback = std::move(callback)](auto&& response)
+    return SendRequest(Request{ 'b', {} }, [callback = std::move(callback)](auto&& response)
     {
         if (!callback)
             return;
@@ -19,7 +19,7 @@ bool ScannerService::SendCaptureBinarizedImageRequest(CaptureBinarizedImageRespo
 
 bool ScannerService::SendCaptureAveragedPointsRequest(CaptureAveragedPointsResponseCallback&& callback)
 {
-    return SendRequest(Request{ 'a', {} }, [this, callback = std::move(callback)](auto&& response)
+    return SendRequest(Request{ 'a', {} }, [callback = std::move(callback)](auto&& response)
     {
         if (!callback)
             return;

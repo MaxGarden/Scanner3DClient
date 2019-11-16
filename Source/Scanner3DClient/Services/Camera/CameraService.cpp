@@ -5,7 +5,7 @@ using namespace Scanner3DClient::Services;
 
 bool CameraService::SendCaptureImageRequest(CaptureImageResponseCallback&& callback)
 {
-    return SendRequest(Request{ 'c', {} }, [this, callback = std::move(callback)](auto&& response)
+    return SendRequest(Request{ 'c', {} }, [callback = std::move(callback)](auto&& response)
     {
         if (!callback)
             return;
