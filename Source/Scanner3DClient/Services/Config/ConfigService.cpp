@@ -5,7 +5,7 @@ using namespace Scanner3DClient::Services;
 
 bool ConfigService::SendGetConfigRequest(GetConfigResponseCallback&& callback)
 {
-    return SendRequest(Request{ 'g', {} }, [this, callback = std::move(callback)](auto&& response)
+    return SendRequest(Request{ 'g', {} }, [callback = std::move(callback)](auto&& response)
     {
         OnConfigResponse(callback, std::move(response));
     });

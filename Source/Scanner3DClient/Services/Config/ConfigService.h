@@ -35,6 +35,13 @@ namespace Scanner3DClient::Services
                 float CameraLaserInclinationInRad;
                 float AxisCameraInclinationInRad;
             } ScannerConfig;
+
+            struct
+            {
+                float MotorStepAngleInDegrees; //readonly
+                unsigned short MotorStepsPerTrayStep; //from 1 to 6400
+                unsigned short MotorStepDelayInMiliseconds ;
+            } TrayConfig;
         };
 
         using GetConfigResponseCallback = std::function<void(std::optional<Config>)>;
