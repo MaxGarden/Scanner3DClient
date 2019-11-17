@@ -20,7 +20,7 @@ namespace Scanner3DClient::Services
         ScannerService() = default;
         virtual ~ScannerService() override final = default;
 
-        bool SendCaptureBinarizedImageRequest(CaptureBinarizedImageResponseCallback&& callback);
-        bool SendCaptureAveragedPointsRequest(CaptureAveragedPointsResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendCaptureBinarizedImageRequest(CaptureBinarizedImageResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendCaptureAveragedPointsRequest(CaptureAveragedPointsResponseCallback&& callback);
     };
 }

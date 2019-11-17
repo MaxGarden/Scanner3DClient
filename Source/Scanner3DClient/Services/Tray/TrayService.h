@@ -13,10 +13,10 @@ namespace Scanner3DClient::Services
         TrayService() = default;
         virtual ~TrayService() override final = default;
 
-        bool SendStepForwardRequest(StepResponseCallback&& callback);
-        bool SendStepBackwardRequest(StepResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendStepForwardRequest(StepResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendStepBackwardRequest(StepResponseCallback&& callback);
 
     private:
-        bool SendStepRequest(Request::RequestType requestType, StepResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendStepRequest(Request::RequestType requestType, StepResponseCallback&& callback);
     };
 }

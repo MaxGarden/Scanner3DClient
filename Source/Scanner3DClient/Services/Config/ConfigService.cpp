@@ -3,7 +3,7 @@
 
 using namespace Scanner3DClient::Services;
 
-bool ConfigService::SendGetConfigRequest(GetConfigResponseCallback&& callback)
+RemoteServices::IResponseHandleSharedPtr ConfigService::SendGetConfigRequest(GetConfigResponseCallback&& callback)
 {
     return SendRequest(Request{ 'g', {} }, [callback = std::move(callback)](auto&& response)
     {
@@ -11,7 +11,7 @@ bool ConfigService::SendGetConfigRequest(GetConfigResponseCallback&& callback)
     });
 }
 
-bool ConfigService::SendApplyConfigRequest(const Config& config, GetConfigResponseCallback&&callback)
+RemoteServices::IResponseHandleSharedPtr ConfigService::SendApplyConfigRequest(const Config& config, GetConfigResponseCallback&&callback)
 {
     const auto beginIterator = reinterpret_cast<const RemoteServices::byte*>(&config);
     const auto endIterator = beginIterator + sizeof(Config);

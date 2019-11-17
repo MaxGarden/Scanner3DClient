@@ -3,7 +3,7 @@
 
 using namespace Scanner3DClient::Services;
 
-bool CameraService::SendCaptureImageRequest(CaptureImageResponseCallback&& callback)
+RemoteServices::IResponseHandleSharedPtr CameraService::SendCaptureImageRequest(CaptureImageResponseCallback&& callback)
 {
     return SendRequest(Request{ 'c', {} }, [callback = std::move(callback)](auto&& response)
     {

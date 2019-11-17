@@ -70,6 +70,8 @@ namespace Scanner3DClient::GUI
 
         std::vector<byte> m_imageData;
 
-        static SettingsDialog* s_activeSettingsDialog;
+        RemoteServices::IResponseHandleSharedPtr m_configResponseHandle;
+        RemoteServices::IResponseHandleSharedPtr m_previewResponseHandle;
+        RemoteServices::IResponseHandleSharedPtr m_trayResponseHandle;
     };
 }

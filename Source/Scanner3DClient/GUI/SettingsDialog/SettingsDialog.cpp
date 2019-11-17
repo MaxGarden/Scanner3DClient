@@ -8,8 +8,6 @@
 using namespace Scanner3DClient;
 using namespace Scanner3DClient::GUI;
 
-SettingsDialog* SettingsDialog::s_activeSettingsDialog = nullptr;
-
 SettingsDialog::SettingsDialog(QWidget* parent, Services::ScannerService& scannerService, Services::ConfigService& configService, Services::CameraService& cameraService, Services::TrayService& trayService) :
     QDialog{ parent },
     m_scanerService{ scannerService },
@@ -17,29 +15,35 @@ SettingsDialog::SettingsDialog(QWidget* parent, Services::ScannerService& scanne
     m_cameraService{ cameraService },
     m_trayService{ trayService }
 {
-    CLIENT_ASSERT(!s_activeSettingsDialog);
-    s_activeSettingsDialog = this;
-
     setupUi(this);
 }
 
 SettingsDialog::~SettingsDialog()
 {
-    if(s_activeSettingsDialog == this)
-        s_activeSettingsDialog = nullptr;
+    if (m_configResponseHandle)
+        m_configResponseHandle->Invalidate();
+
+    if (m_previewResponseHandle)
+        m_previewResponseHandle->Invalidate();
+
+    if (m_trayResponseHandle)
+        m_trayResponseHandle->Invalidate();
 }
 
 void SettingsDialog::open()
 {
     setEnabled(false);
-    const auto result = m_configService.SendGetConfigRequest([this](const auto& cameraConfig)
+
+    if (m_configResponseHandle)
+        m_configResponseHandle->Invalidate();
+
+    m_configResponseHandle = m_configService.SendGetConfigRequest([this](const auto& cameraConfig)
     {
-        if (this == s_activeSettingsDialog)
-            OnConfigResponse(cameraConfig);
+        OnConfigResponse(cameraConfig);
     });
 
-    CLIENT_ASSERT(result);
-    if (!result)
+    CLIENT_ASSERT(m_configResponseHandle);
+    if (!m_configResponseHandle)
         close();
 
     return QDialog::show();
@@ -178,23 +182,20 @@ void SettingsDialog::RefreshPreview()
 {
     auto imageCallback = [this](auto&& image)
     {
-        if (this == s_activeSettingsDialog)
-            OnCaptureImageResponse(std::move(image));
+        OnCaptureImageResponse(std::move(image));
     };
 
-    auto sendRequestResult = false;
+    if (m_previewResponseHandle)
+        m_previewResponseHandle->Invalidate();
 
     if (m_rawPreviewRadioButton->isChecked())
-        sendRequestResult = m_cameraService.SendCaptureImageRequest(std::move(imageCallback));
+        m_previewResponseHandle = m_cameraService.SendCaptureImageRequest(std::move(imageCallback));
     else if (m_binarizedPreviewRadioButton->isChecked())
-        sendRequestResult = m_scanerService.SendCaptureBinarizedImageRequest(std::move(imageCallback));
+        m_previewResponseHandle = m_scanerService.SendCaptureBinarizedImageRequest(std::move(imageCallback));
     else if (m_averagedPreviewRadioButton->isChecked())
     {
-        sendRequestResult = m_scanerService.SendCaptureAveragedPointsRequest([this, imageCallback = std::move(imageCallback)](auto&& points)
+        m_previewResponseHandle = m_scanerService.SendCaptureAveragedPointsRequest([this, imageCallback = std::move(imageCallback)](auto&& points)
         {
-            if (this != s_activeSettingsDialog)
-                return;
-
             std::vector<byte> image;
 
             const auto& cameraConfig = m_assignedConfig.CameraConfig;
@@ -212,8 +213,8 @@ void SettingsDialog::RefreshPreview()
     else
         CLIENT_ASSERT(false);
 
-    CLIENT_ASSERT(sendRequestResult);
-    if (!sendRequestResult)
+    CLIENT_ASSERT(m_previewResponseHandle);
+    if (!m_previewResponseHandle)
         QMessageBox::critical(this, tr("Error"), tr("Cannot send capture request!"));
     else
         m_previewGroupBox->setEnabled(false);
@@ -285,13 +286,16 @@ void SettingsDialog::OnOkButtonClicked()
 void SettingsDialog::OnApplyButtonClicked()
 {
     auto configToApply = CreateConfig();
-    const auto result = m_configService.SendApplyConfigRequest(configToApply, [this](const auto& cameraConfig)
+
+    if (m_configResponseHandle)
+        m_configResponseHandle->Invalidate();
+
+    m_configResponseHandle = m_configService.SendApplyConfigRequest(configToApply, [this](const auto& cameraConfig)
     {
-        if (this == s_activeSettingsDialog)
-            OnConfigResponse(cameraConfig);
+        OnConfigResponse(cameraConfig);
     });
 
-    if (!result)
+    if (!m_configResponseHandle)
         QMessageBox::critical(this, tr("Error"), tr("Cannot send apply request!"));
     else
         setEnabled(false);
@@ -334,13 +338,15 @@ void SettingsDialog::OnPreviewTypeRadioButtonToggled(bool toggled)
 
 void SettingsDialog::OnStepForwardButtonClicked()
 {
-    const auto result = m_trayService.SendStepForwardRequest([this](auto result)
+    if (m_trayResponseHandle)
+        m_trayResponseHandle->Invalidate();
+
+    m_trayResponseHandle = m_trayService.SendStepForwardRequest([this](auto result)
     {
-        if (this == s_activeSettingsDialog)
-            OnStepResponse(result);
+        OnStepResponse(result);
     });
 
-    if (!result)
+    if (!m_trayResponseHandle)
         QMessageBox::critical(this, tr("Error"), tr("Cannot send step forward request!"));
     else
         m_stepButtonsWidget->setEnabled(false);
@@ -348,13 +354,15 @@ void SettingsDialog::OnStepForwardButtonClicked()
 
 void SettingsDialog::OnStepBackwardButtonClicked()
 {
+    if (m_trayResponseHandle)
+        m_trayResponseHandle->Invalidate();
+
     const auto result = m_trayService.SendStepBackwardRequest([this](auto result)
     {
-        if (this == s_activeSettingsDialog)
-            OnStepResponse(result);
+        OnStepResponse(result);
     });
 
-    if (!result)
+    if (!m_trayResponseHandle)
         QMessageBox::critical(this, tr("Error"), tr("Cannot send step backward request!"));
     else
         m_stepButtonsWidget->setEnabled(false);

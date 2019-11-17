@@ -3,17 +3,17 @@
 
 using namespace Scanner3DClient::Services;
 
-bool TrayService::SendStepForwardRequest(StepResponseCallback&& callback)
+RemoteServices::IResponseHandleSharedPtr TrayService::SendStepForwardRequest(StepResponseCallback&& callback)
 {
     return SendStepRequest('f', std::move(callback));
 }
 
-bool TrayService::SendStepBackwardRequest(StepResponseCallback&& callback)
+RemoteServices::IResponseHandleSharedPtr TrayService::SendStepBackwardRequest(StepResponseCallback&& callback)
 {
     return SendStepRequest('b', std::move(callback));
 }
 
-bool TrayService::SendStepRequest(Request::RequestType requestType, StepResponseCallback&& callback)
+RemoteServices::IResponseHandleSharedPtr TrayService::SendStepRequest(Request::RequestType requestType, StepResponseCallback&& callback)
 {
     return SendRequest(Request{ requestType, {} }, [callback = std::move(callback)](auto&& response)
     {

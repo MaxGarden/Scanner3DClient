@@ -13,6 +13,6 @@ namespace Scanner3DClient::Services
         CameraService() = default;
         virtual ~CameraService() override final = default;
 
-        bool SendCaptureImageRequest(CaptureImageResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendCaptureImageRequest(CaptureImageResponseCallback&& callback);
     };
 }

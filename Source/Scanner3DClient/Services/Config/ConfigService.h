@@ -50,8 +50,8 @@ namespace Scanner3DClient::Services
         ConfigService() = default;
         virtual ~ConfigService() override final = default;
 
-        bool SendGetConfigRequest(GetConfigResponseCallback&& callback);
-        bool SendApplyConfigRequest(const Config& config, GetConfigResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendGetConfigRequest(GetConfigResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendApplyConfigRequest(const Config& config, GetConfigResponseCallback&& callback);
 
     private:
         static void OnConfigResponse(const GetConfigResponseCallback& callback, Response&& response);
