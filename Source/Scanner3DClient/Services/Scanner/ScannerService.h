@@ -13,8 +13,16 @@ namespace Scanner3DClient::Services
             unsigned short Y;
         };
 
+        struct Point3D
+        {
+            float X;
+            float Y;
+            float Z;
+        };
+
         using CaptureBinarizedImageResponseCallback = std::function<void(std::vector<byte>&&)>;
         using CaptureAveragedPointsResponseCallback = std::function<void(std::vector<Point>&&)>;
+        using Calculate3DPointsResponseCallback = std::function<void(std::vector<Point3D>&&)>;
 
     public:
         ScannerService() = default;
@@ -22,5 +30,6 @@ namespace Scanner3DClient::Services
 
         RemoteServices::IResponseHandleSharedPtr SendCaptureBinarizedImageRequest(CaptureBinarizedImageResponseCallback&& callback);
         RemoteServices::IResponseHandleSharedPtr SendCaptureAveragedPointsRequest(CaptureAveragedPointsResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendCalculate3DPointsRequest(float trayAngle, Calculate3DPointsResponseCallback&& callback);
     };
 }
