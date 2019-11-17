@@ -51,7 +51,7 @@ void SettingsDialog::open()
 
 void SettingsDialog::AssignConfig(Services::ConfigService::Config&& config)
 {
-    static const auto degreesToRadians = 180.0 / M_PI;
+    static const auto radiansToDegrees = 180.0 / M_PI;
 
     m_assignedConfig = std::move(config);
 
@@ -70,8 +70,8 @@ void SettingsDialog::AssignConfig(Services::ConfigService::Config&& config)
     m_binarizationTresholdMaxSpinBox->setValue(scannerConfig.TresholdMax);
     m_originXSpinBox->setValue(scannerConfig.Origin.X);
     m_originYSpinBox->setValue(scannerConfig.Origin.Y);
-    m_cameraLaserInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.CameraLaserInclinationInRad) * degreesToRadians);
-    m_axisCameraInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.AxisCameraInclinationInRad) * degreesToRadians);
+    m_cameraLaserInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.CameraLaserInclinationInRadians) * radiansToDegrees);
+    m_axisCameraInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.AxisCameraInclinationInRadians) * radiansToDegrees);
 
     const auto& trayConfig = m_assignedConfig.TrayConfig;
     m_trayStepInDegreesDoubleSpinBox->setValue(static_cast<float>(trayConfig.MotorStepsPerTrayStep) * trayConfig.MotorStepAngleInDegrees);
@@ -92,7 +92,7 @@ void SettingsDialog::OnConfigResponse(std::optional<Services::ConfigService::Con
 
 Services::ConfigService::Config SettingsDialog::CreateConfig() const noexcept
 {
-    static const auto radiansToDegrees = M_PI / 180.0;
+    static const auto degreesToRadians = M_PI / 180.0;
 
     auto result = m_assignedConfig;
 
@@ -111,8 +111,8 @@ Services::ConfigService::Config SettingsDialog::CreateConfig() const noexcept
     scannerConfig.TresholdMax = static_cast<byte>(m_binarizationTresholdMaxSpinBox->value());
     scannerConfig.Origin.X = static_cast<unsigned short>(m_originXSpinBox->value());
     scannerConfig.Origin.Y = static_cast<unsigned short>(m_originYSpinBox->value());
-    scannerConfig.CameraLaserInclinationInRad = static_cast<float>(m_cameraLaserInclinationDoubleSpinBox->value() * radiansToDegrees);
-    scannerConfig.AxisCameraInclinationInRad = static_cast<float>(m_axisCameraInclinationDoubleSpinBox->value() * radiansToDegrees);
+    scannerConfig.CameraLaserInclinationInRadians = static_cast<float>(m_cameraLaserInclinationDoubleSpinBox->value() * degreesToRadians);
+    scannerConfig.AxisCameraInclinationInRadians = static_cast<float>(m_axisCameraInclinationDoubleSpinBox->value() * degreesToRadians);
 
     auto& trayConfig = result.TrayConfig;
     trayConfig.MotorStepsPerTrayStep = static_cast<unsigned short>(m_trayStepInDegreesDoubleSpinBox->value() / trayConfig.MotorStepAngleInDegrees);

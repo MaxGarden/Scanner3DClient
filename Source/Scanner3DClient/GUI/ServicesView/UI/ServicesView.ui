@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>419</width>
     <height>300</height>
    </rect>
   </property>
@@ -14,6 +14,32 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="m_resultGroupBox">
+     <property name="title">
+      <string>Result</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="Scanner3DClient::GUI::ScanningResultWidget" name="m_scanningResultWidget"/>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="m_resultProgressBar">
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="m_startPushButton">
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QPushButton" name="m_settingsPushButton">
      <property name="text">
@@ -23,6 +49,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Scanner3DClient::GUI::ScanningResultWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>GUI/ScanningResultWidget/ScanningResultWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -41,8 +74,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>m_startPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ServicesView</receiver>
+   <slot>OnStartButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>209</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>209</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>OnSettingsButtonClicked()</slot>
+  <slot>OnStartButtonClicked()</slot>
  </slots>
 </ui>

@@ -30,6 +30,6 @@ namespace Scanner3DClient::Services
 
         RemoteServices::IResponseHandleSharedPtr SendCaptureBinarizedImageRequest(CaptureBinarizedImageResponseCallback&& callback);
         RemoteServices::IResponseHandleSharedPtr SendCaptureAveragedPointsRequest(CaptureAveragedPointsResponseCallback&& callback);
-        RemoteServices::IResponseHandleSharedPtr SendCalculate3DPointsRequest(float trayAngle, Calculate3DPointsResponseCallback&& callback);
+        RemoteServices::IResponseHandleSharedPtr SendCalculate3DPointsRequest(float trayAngleInRadians, Calculate3DPointsResponseCallback&& callback);
     };
 }

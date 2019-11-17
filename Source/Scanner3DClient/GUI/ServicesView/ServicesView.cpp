@@ -3,6 +3,8 @@
 #include "GUI/SettingsDialog/SettingsDialog.h"
 #include "RemoteServices/Controllers/ServicesControllerListenerBase.h"
 
+#include <QMessageBox>
+
 using namespace Scanner3DClient::GUI;
 
 class ServicesViewListener final : public RemoteServices::ServicesControllerListenerBase
@@ -38,7 +40,6 @@ ServicesView::ServicesView(QWidget* parent) :
 {
     setupUi(this);
 }
-
 
 void ServicesView::OnServicePaired(RemoteServices::IService& service)
 {
@@ -82,6 +83,31 @@ void ServicesView::OnServiceUnparied(RemoteServices::IService& service)
     CLIENT_ASSERT(result);
 }
 
+void ServicesView::Update()
+{
+    m_settingsPushButton->setEnabled(!m_currentScanningProcess 
+        || m_currentScanningProcess->GetCurrentState() == Scanning::ScanningProcess::State::Completed);
+
+    if (m_currentScanningProcess)
+    {
+        if (!m_currentScanningProcess->Update())
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Scanning error"));
+            m_currentScanningProcess.reset();
+        }
+
+        m_resultProgressBar->setValue(m_currentScanningProcess->GetProgress() * 100.0f);
+        m_startPushButton->setText("Abort");
+
+        if (m_currentScanningProcess->GetCurrentState() == Scanning::ScanningProcess::State::Completed)
+            m_currentScanningProcess.reset();
+    }
+    else
+        m_startPushButton->setText("Start");
+
+    m_scanningResultWidget->update();
+}
+
 MVC::IListenerUniquePtr ServicesView::CreateListener()
 {
     return std::make_unique<ServicesViewListener>(*this);
@@ -89,11 +115,39 @@ MVC::IListenerUniquePtr ServicesView::CreateListener()
 
 void ServicesView::OnSettingsButtonClicked()
 {
-    if (!m_scannerService || !m_configService || !m_cameraService)
+    if (!m_trayService || !m_scannerService || !m_configService || !m_cameraService)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Missing service!"));
         return;
+    }
 
     const auto settingsDialog = new SettingsDialog{ this, *m_scannerService, *m_configService, *m_cameraService, *m_trayService };
     
     settingsDialog->setAttribute(Qt::WA_DeleteOnClose);
     settingsDialog->open();
+}
+
+void ServicesView::OnStartButtonClicked()
+{
+    if (!m_trayService || !m_configService || !m_scannerService)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Missing service!"));
+        return;
+    }
+
+    if (m_currentScanningProcess)
+    {
+        m_currentScanningProcess->Cancel();
+        m_currentScanningProcess.reset();
+    }
+    else
+    {
+        m_scanningResultWidget->ClearPoints();
+        m_currentScanningProcess = std::make_unique<Scanning::ScanningProcess>(*m_trayService, *m_configService, *m_scannerService);
+
+        m_currentScanningProcess->Start([this](auto&& points)
+        {
+            m_scanningResultWidget->AddPoints(std::move(points));
+        });
+    }
 }

@@ -26,4 +26,9 @@ namespace Scanner3DClient
         DECLARE_POINTERS(ClientView);
         DECLARE_POINTERS(ServicesView);
     }
+
+    namespace Scanning
+    {
+        DECLARE_POINTERS(ScanningProcess);
+    }
 }

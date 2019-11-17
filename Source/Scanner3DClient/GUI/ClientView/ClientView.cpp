@@ -68,6 +68,15 @@ void ClientView::OnServerDisconnected(const RemoteServices::IServicesControllerS
     m_servicesViews.erase(iterator);
 }
 
+void ClientView::Update()
+{
+    for (const auto& pair : m_servicesViews)
+    {
+        if (const auto& servicesView = pair.second)
+            servicesView->Update();
+    }
+}
+
 void ClientView::OnControllerChanged()
 {
     while (!m_servicesViews.empty())

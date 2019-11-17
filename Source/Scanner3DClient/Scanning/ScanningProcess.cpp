@@ -45,7 +45,7 @@ bool ScanningProcess::Start(OnScanStepCallback&& onScanStepCallback)
 
         m_config = std::move(*config);
 
-        m_currentTrayAngle = 0.0f;
+        m_currentTrayAngleInDegrees = 0.0f;
         m_remaningStepsCount = GetTotalStepsCount();
 
         m_currentState = (m_remaningStepsCount > 0) ? State::ConfigReady : State::Completed;
@@ -87,7 +87,7 @@ float ScanningProcess::GetProgress() const noexcept
     if (totalStepsCount == 0)
         return 0.0f;
 
-    return static_cast<float>(GetRemainingStepsCount()) / totalStepsCount;
+    return static_cast<float>((totalStepsCount - GetRemainingStepsCount())) / totalStepsCount;
 }
 
 bool ScanningProcess::Update()
@@ -138,7 +138,7 @@ bool ScanningProcess::OnScannerReady()
         }
         
         const auto& trayConfig = m_config.TrayConfig;
-        m_currentTrayAngle += trayConfig.MotorStepAngleInDegrees * trayConfig.MotorStepsPerTrayStep;
+        m_currentTrayAngleInDegrees += trayConfig.MotorStepAngleInDegrees * trayConfig.MotorStepsPerTrayStep;
         m_currentState = State::TrayReady;
     });
 
@@ -151,12 +151,14 @@ bool ScanningProcess::OnScannerReady()
 
 bool ScanningProcess::OnTrayReady()
 {
+    static const auto degreesToRadians = static_cast<float>(M_PI / 180.0f);
+
     CLIENT_ASSERT(m_remaningStepsCount > 0);
     if (m_remaningStepsCount <= 0)
         return StateError();
 
     InvalidateReponseHande();
-    m_responseHandle = m_scannerService.SendCalculate3DPointsRequest(m_currentTrayAngle, [this](auto&& points)
+    m_responseHandle = m_scannerService.SendCalculate3DPointsRequest(m_currentTrayAngleInDegrees * degreesToRadians, [this](auto&& points)
     {
         m_onScanStepCallback(std::move(points));
         m_currentState = --m_remaningStepsCount > 0 ? State::ScannerReady : State::Completed;

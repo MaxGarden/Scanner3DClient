@@ -45,9 +45,9 @@ RemoteServices::IResponseHandleSharedPtr ScannerService::SendCaptureAveragedPoin
     });
 }
 
-RemoteServices::IResponseHandleSharedPtr ScannerService::SendCalculate3DPointsRequest(float trayAngle, Calculate3DPointsResponseCallback&& callback)
+RemoteServices::IResponseHandleSharedPtr ScannerService::SendCalculate3DPointsRequest(float trayAngleInRadians, Calculate3DPointsResponseCallback&& callback)
 {
-    const auto beginIterator = reinterpret_cast<const byte*>(&trayAngle);
+    const auto beginIterator = reinterpret_cast<const byte*>(&trayAngleInRadians);
     const auto endIterator = beginIterator + sizeof(float);
 
     return SendRequest(Request{ 'r', { beginIterator, endIterator } }, [callback = std::move(callback)](auto&& response)

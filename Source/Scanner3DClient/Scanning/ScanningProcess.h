@@ -23,7 +23,7 @@ namespace Scanner3DClient::Scanning
             Completed
         };
 
-        using OnScanStepCallback = std::function<void(std::vector<Services::ScannerService::Point3D>&)>;
+        using OnScanStepCallback = std::function<void(std::vector<Services::ScannerService::Point3D>&&)>;
 
     public:
         ScanningProcess(Services::TrayService& trayService, Services::ConfigService& configService, Services::ScannerService& scannerService);
@@ -38,9 +38,9 @@ namespace Scanner3DClient::Scanning
         float GetProgress() const noexcept;
         State GetCurrentState() const noexcept;
 
-    private:
         bool Update();
 
+    private:
         bool StateError() noexcept;
         void InvalidateReponseHande();
 
@@ -55,7 +55,7 @@ namespace Scanner3DClient::Scanning
 
         Services::ConfigService::Config m_config = {};
 
-        float m_currentTrayAngle;
+        float m_currentTrayAngleInDegrees;
         size_t m_remaningStepsCount;
         State m_currentState = State::Idle;
 

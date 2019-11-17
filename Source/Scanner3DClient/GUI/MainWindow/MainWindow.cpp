@@ -91,6 +91,8 @@ void MainWindow::OnUpdateTimer()
 
     if (m_client)
         m_client->Update();
+
+    m_clientView->Update();
 }
 
 void MainWindow::OnConnectToScannerTrigger()

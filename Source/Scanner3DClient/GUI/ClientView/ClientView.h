@@ -17,6 +17,8 @@ namespace Scanner3DClient::GUI
         void OnServerConnected(const RemoteServices::IServicesControllerSharedPtr& servicesController);
         void OnServerDisconnected(const RemoteServices::IServicesControllerSharedPtr& servicesController);
 
+        void Update();
+
     protected:
         virtual void OnControllerChanged() override final;
         virtual MVC::IListenerUniquePtr CreateListener() override final;
