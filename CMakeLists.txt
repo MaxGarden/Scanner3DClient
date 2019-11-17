@@ -9,6 +9,7 @@ SET(CMAKE_AUTOMOC_MOC_OPTIONS "-b<pch.h>")
 SET(CMAKE_CXX_STANDARD 17)
 
 FIND_PACKAGE(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(OpenGL REQUIRED)
 
 SET(SCANNER_3D_CLIENT_SOURCES
     Source/pch.h
@@ -47,6 +48,9 @@ SET(SCANNER_3D_CLIENT_SOURCES
     Source/Scanner3DClient/GUI/ConnectDialog/ConnectDialog.h
     Source/Scanner3DClient/GUI/ConnectDialog/ConnectDialog.cpp
     
+    Source/Scanner3DClient/GUI/ScanningResultWidget/ScanningResultWidget.h
+    Source/Scanner3DClient/GUI/ScanningResultWidget/ScanningResultWidget.cpp
+    
     Source/Scanner3DClient/Scanning/ScanningProcess.h
     Source/Scanner3DClient/Scanning/ScanningProcess.cpp
 )
@@ -58,6 +62,6 @@ ADD_EXECUTABLE(Scanner3DClient ${SCANNER_3D_CLIENT_SOURCES})
 ADD_DEPENDENCIES(Scanner3DClient RemoteServices)
 
 TARGET_INCLUDE_DIRECTORIES(Scanner3DClient PRIVATE Source Source/Scanner3DClient Dependencies/RemoteServices/Include Dependencies/RemoteServices/Dependencies/Networking/Include)
-TARGET_LINK_LIBRARIES(Scanner3DClient RemoteServices Qt5::Core Qt5::Widgets)
+TARGET_LINK_LIBRARIES(Scanner3DClient RemoteServices Qt5::Core Qt5::Widgets ${OPENGL_gl_LIBRARY})
 
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
