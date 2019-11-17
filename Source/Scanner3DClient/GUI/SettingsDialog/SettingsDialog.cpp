@@ -37,9 +37,9 @@ void SettingsDialog::open()
     if (m_configResponseHandle)
         m_configResponseHandle->Invalidate();
 
-    m_configResponseHandle = m_configService.SendGetConfigRequest([this](const auto& cameraConfig)
+    m_configResponseHandle = m_configService.SendGetConfigRequest([this](const auto& config)
     {
-        OnConfigResponse(cameraConfig);
+        OnConfigResponse(config);
     });
 
     CLIENT_ASSERT(m_configResponseHandle);
@@ -74,7 +74,7 @@ void SettingsDialog::AssignConfig(Services::ConfigService::Config&& config)
     m_axisCameraInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.AxisCameraInclinationInRad) * degreesToRadians);
 
     const auto& trayConfig = m_assignedConfig.TrayConfig;
-    m_trayStepInDegreesDoubleSpinBox->setValue(trayConfig.MotorStepsPerTrayStep * trayConfig.MotorStepAngleInDegrees);
+    m_trayStepInDegreesDoubleSpinBox->setValue(static_cast<float>(trayConfig.MotorStepsPerTrayStep) * trayConfig.MotorStepAngleInDegrees);
     m_motorStepDelayInMilisecondsSpinBox->setValue(trayConfig.MotorStepDelayInMiliseconds);
 }
 
