@@ -3,6 +3,7 @@
 #include "Services/Config/ConfigService.h"
 #include "Services/Camera/CameraService.h"
 #include "Services/Scanner/ScannerService.h"
+#include "Services/Tray/TrayService.h"
 #include "UI/ui_SettingsDialog.h"
 
 #include <QDialog>
@@ -15,10 +16,13 @@ namespace Scanner3DClient::GUI
         Q_OBJECT
 
     public:
-        SettingsDialog(QWidget* parent, Services::ScannerService& scannerService, Services::ConfigService& configService, Services::CameraService& cameraService);
+        SettingsDialog(QWidget* parent, Services::ScannerService& scannerService, Services::ConfigService& configService, Services::CameraService& cameraService, Services::TrayService& trayService);
         virtual ~SettingsDialog() override final;
 
         virtual void open() override final;
+
+    protected:
+        virtual void mouseDoubleClickEvent(QMouseEvent* event) override final;
 
     private:
         void AssignConfig(Services::ConfigService::Config&& config);
@@ -27,12 +31,10 @@ namespace Scanner3DClient::GUI
 
         void OnCaptureImageResponse(std::vector<byte>&& image);
 
-    protected:
-        virtual void mouseDoubleClickEvent(QMouseEvent* event) override final;
-
-    private:
         void SetPreview(std::vector<byte>&& imageData, std::optional<QPoint> newOrigin = std::nullopt);
         void RefreshPreview();
+
+        void OnStepResponse(bool response);
 
     private slots:
         void OnISOSliderValueChanged(int value);
@@ -41,6 +43,8 @@ namespace Scanner3DClient::GUI
         void OnHeightSpinBoxValueChanged(int value);
         void OnRotationSliderValueChanged(int value);
         void OnRotationSpinBoxValueChanged(int value);
+
+        void OnTrayStepInDegreesDoubleSpinBoxEditingFinished();
 
         void OnOkButtonClicked();
         void OnApplyButtonClicked();
@@ -53,10 +57,14 @@ namespace Scanner3DClient::GUI
         void OnRefreshPreviewOrigin();
         void OnPreviewTypeRadioButtonToggled(bool toggled);
 
+        void OnStepForwardButtonClicked();
+        void OnStepBackwardButtonClicked();
+
     private:
         Services::ConfigService& m_configService;
         Services::CameraService& m_cameraService;
         Services::ScannerService& m_scanerService;
+        Services::TrayService& m_trayService;
 
         Services::ConfigService::Config m_assignedConfig = {};
 

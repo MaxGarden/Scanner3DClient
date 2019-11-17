@@ -10,11 +10,12 @@ using namespace Scanner3DClient::GUI;
 
 SettingsDialog* SettingsDialog::s_activeSettingsDialog = nullptr;
 
-SettingsDialog::SettingsDialog(QWidget* parent, Services::ScannerService& scannerService, Services::ConfigService& configService, Services::CameraService& cameraService) :
+SettingsDialog::SettingsDialog(QWidget* parent, Services::ScannerService& scannerService, Services::ConfigService& configService, Services::CameraService& cameraService, Services::TrayService& trayService) :
     QDialog{ parent },
     m_scanerService{ scannerService },
     m_configService{ configService },
-    m_cameraService{ cameraService }
+    m_cameraService{ cameraService },
+    m_trayService{ trayService }
 {
     CLIENT_ASSERT(!s_activeSettingsDialog);
     s_activeSettingsDialog = this;
@@ -46,6 +47,8 @@ void SettingsDialog::open()
 
 void SettingsDialog::AssignConfig(Services::ConfigService::Config&& config)
 {
+    static const auto degreesToRadians = 180.0 / M_PI;
+
     m_assignedConfig = std::move(config);
 
     const auto& cameraConfig = m_assignedConfig.CameraConfig;
@@ -63,8 +66,12 @@ void SettingsDialog::AssignConfig(Services::ConfigService::Config&& config)
     m_binarizationTresholdMaxSpinBox->setValue(scannerConfig.TresholdMax);
     m_originXSpinBox->setValue(scannerConfig.Origin.X);
     m_originYSpinBox->setValue(scannerConfig.Origin.Y);
-    m_cameraLaserInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.CameraLaserInclinationInRad) * 180.0 / M_PI);
-    m_axisCameraInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.AxisCameraInclinationInRad) * 180.0 / M_PI);
+    m_cameraLaserInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.CameraLaserInclinationInRad) * degreesToRadians);
+    m_axisCameraInclinationDoubleSpinBox->setValue(static_cast<double>(scannerConfig.AxisCameraInclinationInRad) * degreesToRadians);
+
+    const auto& trayConfig = m_assignedConfig.TrayConfig;
+    m_trayStepInDegreesDoubleSpinBox->setValue(trayConfig.MotorStepsPerTrayStep * trayConfig.MotorStepAngleInDegrees);
+    m_motorStepDelayInMilisecondsSpinBox->setValue(trayConfig.MotorStepDelayInMiliseconds);
 }
 
 void SettingsDialog::OnConfigResponse(std::optional<Services::ConfigService::Config> cameraConfig)
@@ -81,6 +88,8 @@ void SettingsDialog::OnConfigResponse(std::optional<Services::ConfigService::Con
 
 Services::ConfigService::Config SettingsDialog::CreateConfig() const noexcept
 {
+    static const auto radiansToDegrees = M_PI / 180.0;
+
     auto result = m_assignedConfig;
 
     auto& cameraConfig = result.CameraConfig;
@@ -98,8 +107,12 @@ Services::ConfigService::Config SettingsDialog::CreateConfig() const noexcept
     scannerConfig.TresholdMax = static_cast<byte>(m_binarizationTresholdMaxSpinBox->value());
     scannerConfig.Origin.X = static_cast<unsigned short>(m_originXSpinBox->value());
     scannerConfig.Origin.Y = static_cast<unsigned short>(m_originYSpinBox->value());
-    scannerConfig.CameraLaserInclinationInRad = static_cast<float>(m_cameraLaserInclinationDoubleSpinBox->value() * M_PI / 180.0);
-    scannerConfig.AxisCameraInclinationInRad = static_cast<float>(m_axisCameraInclinationDoubleSpinBox->value() * M_PI / 180.0);
+    scannerConfig.CameraLaserInclinationInRad = static_cast<float>(m_cameraLaserInclinationDoubleSpinBox->value() * radiansToDegrees);
+    scannerConfig.AxisCameraInclinationInRad = static_cast<float>(m_axisCameraInclinationDoubleSpinBox->value() * radiansToDegrees);
+
+    auto& trayConfig = result.TrayConfig;
+    trayConfig.MotorStepsPerTrayStep = static_cast<unsigned short>(m_trayStepInDegreesDoubleSpinBox->value() / trayConfig.MotorStepAngleInDegrees);
+    trayConfig.MotorStepDelayInMiliseconds = static_cast<unsigned short>(m_motorStepDelayInMilisecondsSpinBox->value());
 
     return result;
 }
@@ -121,9 +134,14 @@ void SettingsDialog::mouseDoubleClickEvent(QMouseEvent* event)
 {
     const auto& globalPosition = event->globalPos();
     const auto newOrigin = m_previewLabel->mapFromGlobal(globalPosition);
+    const auto& cameraConfig = m_assignedConfig.CameraConfig;
+    const auto boundingRect = m_previewLabel->visibleRegion().boundingRect();
 
-    m_originXSpinBox->setValue(newOrigin.x());
-    m_originYSpinBox->setValue(newOrigin.y());
+    if (boundingRect.contains(newOrigin))
+    {
+        m_originXSpinBox->setValue(newOrigin.x());
+        m_originYSpinBox->setValue(newOrigin.y());
+    }
 
     QDialog::mouseDoubleClickEvent(event);
 }
@@ -201,6 +219,14 @@ void SettingsDialog::RefreshPreview()
         m_previewGroupBox->setEnabled(false);
 }
 
+void SettingsDialog::OnStepResponse(bool response)
+{
+    if(!response)
+        QMessageBox::critical(this, tr("Error"), tr("Step failed!"));
+
+    m_stepButtonsWidget->setEnabled(true);
+}
+
 void SettingsDialog::OnISOSliderValueChanged(int value)
 {
     m_isoSpinBox->setValue(value * 100);
@@ -236,6 +262,13 @@ void SettingsDialog::OnRotationSpinBoxValueChanged(int value)
 {
     m_rotationSlider->setValue(value / 90);
     m_rotationSpinBox->setValue(AdjustValue(value, 90));
+}
+
+void SettingsDialog::OnTrayStepInDegreesDoubleSpinBoxEditingFinished()
+{
+    const auto& trayConfig = m_assignedConfig.TrayConfig;
+    const auto value = m_trayStepInDegreesDoubleSpinBox->value();
+    m_trayStepInDegreesDoubleSpinBox->setValue(value - std::fmod(value, trayConfig.MotorStepAngleInDegrees));
 }
 
 void SettingsDialog::OnOkButtonClicked()
@@ -276,7 +309,10 @@ void SettingsDialog::OnRefreshPreviewButtonClicked()
 
 void SettingsDialog::OnShowAdvancedScannerConfigChanged(int state)
 {
-    m_scannerConfigAdvancedWidget->setVisible(state == Qt::Checked);
+    const auto visible = state == Qt::Checked;
+
+    m_scannerConfigAdvancedWidget->setVisible(visible);
+    m_trayConfigAdvancedWidget->setVisible(visible);
 }
 
 void SettingsDialog::OnRefreshPreviewOrigin()
@@ -294,4 +330,32 @@ void SettingsDialog::OnPreviewTypeRadioButtonToggled(bool toggled)
 {
     if (toggled)
         RefreshPreview();
+}
+
+void SettingsDialog::OnStepForwardButtonClicked()
+{
+    const auto result = m_trayService.SendStepForwardRequest([this](auto result)
+    {
+        if (this == s_activeSettingsDialog)
+            OnStepResponse(result);
+    });
+
+    if (!result)
+        QMessageBox::critical(this, tr("Error"), tr("Cannot send step forward request!"));
+    else
+        m_stepButtonsWidget->setEnabled(false);
+}
+
+void SettingsDialog::OnStepBackwardButtonClicked()
+{
+    const auto result = m_trayService.SendStepBackwardRequest([this](auto result)
+    {
+        if (this == s_activeSettingsDialog)
+            OnStepResponse(result);
+    });
+
+    if (!result)
+        QMessageBox::critical(this, tr("Error"), tr("Cannot send step backward request!"));
+    else
+        m_stepButtonsWidget->setEnabled(false);
 }

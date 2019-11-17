@@ -53,9 +53,10 @@ void ServicesView::OnServicePaired(RemoteServices::IService& service)
         return true;
     };
 
-    const auto result = tryAssingService(m_configService) 
-        || tryAssingService(m_cameraService) 
-        || tryAssingService(m_scannerService);
+    const auto result = tryAssingService(m_configService)
+        || tryAssingService(m_cameraService)
+        || tryAssingService(m_scannerService)
+        || tryAssingService(m_trayService);
 
     CLIENT_ASSERT(result);
 }
@@ -75,7 +76,8 @@ void ServicesView::OnServiceUnparied(RemoteServices::IService& service)
 
     const auto result = tryUnassingService(m_configService)
         || tryUnassingService(m_cameraService)
-        || tryUnassingService(m_scannerService);
+        || tryUnassingService(m_scannerService)
+        || tryUnassingService(m_trayService);
 
     CLIENT_ASSERT(result);
 }
@@ -90,7 +92,7 @@ void ServicesView::OnSettingsButtonClicked()
     if (!m_scannerService || !m_configService || !m_cameraService)
         return;
 
-    const auto settingsDialog = new SettingsDialog{ this, *m_scannerService, *m_configService, *m_cameraService };
+    const auto settingsDialog = new SettingsDialog{ this, *m_scannerService, *m_configService, *m_cameraService, *m_trayService };
     
     settingsDialog->setAttribute(Qt::WA_DeleteOnClose);
     settingsDialog->open();
