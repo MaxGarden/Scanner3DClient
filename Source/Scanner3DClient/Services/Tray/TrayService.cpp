@@ -3,12 +3,12 @@
 
 using namespace Scanner3DClient::Services;
 
-bool TrayService::SendStepForward(StepResponseCallback&& callback)
+bool TrayService::SendStepForwardRequest(StepResponseCallback&& callback)
 {
     return SendStepRequest('f', std::move(callback));
 }
 
-bool TrayService::SendStepBackward(StepResponseCallback&& callback)
+bool TrayService::SendStepBackwardRequest(StepResponseCallback&& callback)
 {
     return SendStepRequest('b', std::move(callback));
 }

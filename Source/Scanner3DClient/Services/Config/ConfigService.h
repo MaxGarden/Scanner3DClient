@@ -36,11 +36,11 @@ namespace Scanner3DClient::Services
                 float AxisCameraInclinationInRad;
             } ScannerConfig;
 
-            struct
+            struct TrayConfig
             {
                 float MotorStepAngleInDegrees; //readonly
                 unsigned short MotorStepsPerTrayStep; //from 1 to 6400
-                unsigned short MotorStepDelayInMiliseconds ;
+                unsigned short MotorStepDelayInMiliseconds;
             } TrayConfig;
         };
 
