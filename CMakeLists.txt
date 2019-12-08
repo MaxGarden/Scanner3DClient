@@ -55,9 +55,15 @@ SET(SCANNER_3D_CLIENT_SOURCES
     Source/Scanner3DClient/Scanning/ScanningProcess.cpp
 )
 
+SET(GUI_TYPE)
+
+IF(WIN32)
+    SET(GUI_TYPE WIN32)
+ENDIF(WIN32)
+
 ADD_SUBDIRECTORY(Dependencies/RemoteServices)
 
-ADD_EXECUTABLE(Scanner3DClient ${SCANNER_3D_CLIENT_SOURCES})
+ADD_EXECUTABLE(Scanner3DClient ${GUI_TYPE} ${SCANNER_3D_CLIENT_SOURCES})
 
 ADD_DEPENDENCIES(Scanner3DClient RemoteServices)
 
