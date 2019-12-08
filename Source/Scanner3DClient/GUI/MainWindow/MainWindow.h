@@ -16,7 +16,7 @@ namespace Scanner3DClient::GUI
         MainWindow();
         virtual ~MainWindow() override final;
 
-        bool Initialize();
+        bool Initialize(const std::string& localScannerAddress, unsigned short localScannerPort);
         void Finalize();
 
     private slots:

@@ -51,7 +51,7 @@
   </widget>
   <action name="m_connectToScannerAction">
    <property name="text">
-    <string>Connect</string>
+    <string>Connect...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>

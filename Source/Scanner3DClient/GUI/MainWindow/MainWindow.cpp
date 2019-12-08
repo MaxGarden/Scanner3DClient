@@ -21,7 +21,7 @@ MainWindow::~MainWindow()
         Finalize();
 }
 
-bool MainWindow::Initialize()
+bool MainWindow::Initialize(const std::string& localScannerAddress, unsigned short localScannerPort)
 {
     CLIENT_ASSERT(!m_initialized);
     if (m_initialized)
@@ -66,6 +66,7 @@ bool MainWindow::Initialize()
 
     m_updateTimer->start(16);
 
+    m_client->ConnectToServer(localScannerAddress, localScannerPort, 200);
     return (m_initialized = true);
 }
 
