@@ -33,6 +33,7 @@ void ScanningResultWidget::initializeGL()
 void ScanningResultWidget::resizeGL(int width, int height)
 {
     glViewport(0, 0, width, height);
+    RecalculateViewport();
 }
 
 void ScanningResultWidget::paintGL()
@@ -41,8 +42,7 @@ void ScanningResultWidget::paintGL()
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 20.0f);
-    glScalef(m_translation, m_translation, 1.0f);
+    glOrtho(m_viewport.left(), m_viewport.right(), m_viewport.bottom(), m_viewport.top(), 0.0f, 20.0f);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -85,8 +85,85 @@ void ScanningResultWidget::mouseMoveEvent(QMouseEvent* event)
 
 void ScanningResultWidget::wheelEvent(QWheelEvent* event)
 {
-    m_translation += event->angleDelta().y() / 200.0f;
+    static const auto minimumZoomLevel = -15.0f;
+    static const auto maximumZoomLevel = 15.0f;
+    static const auto zoomInMultipler = 1.3f;
+    static const auto zoomOutMultipler = 0.77f;
 
-    if (m_translation <= 0.0f)
-        m_translation = 0.0f;
+    const auto localMousePosition = mapFromGlobal(event->globalPos());
+    auto normalizedMousePosition = QPointF{ static_cast<float>(localMousePosition.x()) / width(), static_cast<float>(localMousePosition.y()) / height() };
+
+    const auto normalizedPointToViewport = [](const auto& point, const auto& viewport)
+    {
+        auto result = point;
+
+        result.rx() *= viewport.width();
+        result.ry() *= viewport.height();
+
+        result.rx() += viewport.left();
+        result.ry() += viewport.top();
+
+        return result;
+    };
+
+    const auto minimumZoom = pow(zoomOutMultipler, abs(minimumZoomLevel));
+    const auto maximumZoom = pow(zoomInMultipler, abs(maximumZoomLevel));
+
+    m_zoomLevel += event->angleDelta().y() / -200.0f;
+    m_zoomLevel = std::max(minimumZoomLevel, std::min(m_zoomLevel, maximumZoomLevel));
+
+    m_zoom = m_zoomLevel > 0 ? pow(zoomInMultipler, m_zoomLevel) : pow(zoomOutMultipler, abs(m_zoomLevel));
+
+    if (normalizedMousePosition.x() >= 0.0f && normalizedMousePosition.x() <= 1.0f && normalizedMousePosition.y() >= 0.0f && normalizedMousePosition.y() <= 1.0f)
+    {
+        const auto newViewport = CalculateViewport(m_origin, m_zoom);
+
+        const auto focusPointOnNewViewport = normalizedPointToViewport(normalizedMousePosition, newViewport);
+        const auto focusPointOnViewport = normalizedPointToViewport(normalizedMousePosition, m_viewport);
+
+        m_origin += (focusPointOnNewViewport - focusPointOnViewport);
+    }
+
+    RecalculateViewport();
+}
+
+QRectF ScanningResultWidget::CalculateViewport(const QPointF& origin, float zoom) const
+{
+    const auto aspectRatio = 1.0f;
+    const auto windowAspectRatio = static_cast<float>(width()) / height();
+    const auto halfWindowAspectRatio = windowAspectRatio * 0.5f;
+
+    const auto halfAspectRatio = aspectRatio * 0.5f;
+    float left, right, top, bottom;
+
+    if (aspectRatio < windowAspectRatio) 
+    {
+        top = 0.5f;
+        left = -halfWindowAspectRatio;
+    }
+    else 
+    {
+        left = -halfAspectRatio;
+        top = halfAspectRatio / windowAspectRatio;
+    }
+
+    right = -left;
+    bottom = -top;
+
+    left *= zoom;
+    right *= zoom;
+    bottom *= zoom;
+    top *= zoom;
+
+    left -= origin.x();
+    top -= origin.y();
+    right -= origin.x();
+    bottom -= origin.y();
+
+    return { left, top, static_cast<double>(right) - left, static_cast<double>(bottom) - top };
+}
+
+void ScanningResultWidget::RecalculateViewport()
+{
+    m_viewport = CalculateViewport(m_origin, m_zoom);
 }

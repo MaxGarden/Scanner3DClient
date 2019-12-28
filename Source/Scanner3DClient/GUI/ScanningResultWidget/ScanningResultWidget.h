@@ -29,6 +29,10 @@ namespace Scanner3DClient::GUI
         virtual void wheelEvent(QWheelEvent* event) override final;
 
     private:
+        QRectF CalculateViewport(const QPointF& origin, float zoom) const;
+        void RecalculateViewport();
+
+    private:
         std::vector<Services::ScannerService::Point3D> m_points;
 
         QPointF m_initialMousePosition;
@@ -38,6 +42,10 @@ namespace Scanner3DClient::GUI
         float m_yaw = 0.0f;
         float m_pitch = 0.0f;
 
-        float m_translation = 1.0f;
+        float m_zoomLevel = 0.0f;
+        float m_zoom = 1.0f;
+
+        QPointF m_origin;
+        QRectF m_viewport;
     };
 }
