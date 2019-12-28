@@ -25,6 +25,7 @@ namespace Scanner3DClient::GUI
 
         virtual void mousePressEvent(QMouseEvent* event) override final;
         virtual void mouseMoveEvent(QMouseEvent* event) override final;
+        virtual void mouseReleaseEvent(QMouseEvent* event) override final;
 
         virtual void wheelEvent(QWheelEvent* event) override final;
 
@@ -36,6 +37,7 @@ namespace Scanner3DClient::GUI
         std::vector<Services::ScannerService::Point3D> m_points;
 
         QPointF m_initialMousePosition;
+        QPointF m_initialOrigin;
         float m_initialYaw = 0.0f;
         float m_initialPitch = 0.0f;
 
@@ -47,5 +49,8 @@ namespace Scanner3DClient::GUI
 
         QPointF m_origin;
         QRectF m_viewport;
+        Qt::MouseButton m_affectedMouseButton = Qt::NoButton;
+
+        static const float s_aspectRatio;
     };
 }

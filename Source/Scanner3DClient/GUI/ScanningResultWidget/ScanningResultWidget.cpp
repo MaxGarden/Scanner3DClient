@@ -7,6 +7,8 @@
 using namespace Scanner3DClient;
 using namespace Scanner3DClient::GUI;
 
+const float ScanningResultWidget::s_aspectRatio = 1.0f;
+
 ScanningResultWidget::ScanningResultWidget(QWidget* parent) :
     QOpenGLWidget{ parent }
 {
@@ -64,23 +66,51 @@ void ScanningResultWidget::paintGL()
 
 void ScanningResultWidget::mousePressEvent(QMouseEvent* event)
 {
-    if (!(event->buttons() & Qt::LeftButton))
-        return QOpenGLWidget::mousePressEvent(event);
+    if (m_affectedMouseButton == Qt::NoButton)
+    {
+        m_initialMousePosition = event->localPos();
+        m_initialYaw = m_yaw;
+        m_initialPitch = m_pitch;
+        m_initialOrigin = m_origin;
+        m_affectedMouseButton = event->button();
+    }
 
-    m_initialMousePosition = event->localPos();
-    m_initialYaw = m_yaw;
-    m_initialPitch = m_pitch;
+    return QOpenGLWidget::mousePressEvent(event);
 }
 
 void ScanningResultWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    if (!(event->buttons() & Qt::LeftButton))
-        return QOpenGLWidget::mouseMoveEvent(event);
+    if (event->buttons() & m_affectedMouseButton)
+    {
+        auto mouseDelta = event->localPos() - m_initialMousePosition;
 
-    const auto mouseDelta = event->localPos() - m_initialMousePosition;
+        switch (m_affectedMouseButton)
+        {
+        case Qt::MiddleButton:
+        case Qt::LeftButton:
+            mouseDelta.rx() /= static_cast<double>(s_aspectRatio) * height();
+            mouseDelta.ry() /= -height();
 
-    m_yaw = m_initialYaw + mouseDelta.x();
-    m_pitch = m_initialPitch + mouseDelta.y();
+            m_origin = m_initialOrigin + mouseDelta * m_zoom;
+            RecalculateViewport();
+            break;
+
+        case Qt::RightButton:
+            m_yaw = m_initialYaw + mouseDelta.x();
+            m_pitch = m_initialPitch + mouseDelta.y();
+            break;
+        }
+    }
+
+    return QOpenGLWidget::mouseMoveEvent(event);
+}
+
+void ScanningResultWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == m_affectedMouseButton)
+        m_affectedMouseButton = Qt::NoButton;
+
+    return QOpenGLWidget::mouseReleaseEvent(event);
 }
 
 void ScanningResultWidget::wheelEvent(QWheelEvent* event)
@@ -129,14 +159,13 @@ void ScanningResultWidget::wheelEvent(QWheelEvent* event)
 
 QRectF ScanningResultWidget::CalculateViewport(const QPointF& origin, float zoom) const
 {
-    const auto aspectRatio = 1.0f;
     const auto windowAspectRatio = static_cast<float>(width()) / height();
     const auto halfWindowAspectRatio = windowAspectRatio * 0.5f;
 
-    const auto halfAspectRatio = aspectRatio * 0.5f;
+    const auto halfAspectRatio = s_aspectRatio * 0.5f;
     float left, right, top, bottom;
 
-    if (aspectRatio < windowAspectRatio) 
+    if (s_aspectRatio < windowAspectRatio)
     {
         top = 0.5f;
         left = -halfWindowAspectRatio;
