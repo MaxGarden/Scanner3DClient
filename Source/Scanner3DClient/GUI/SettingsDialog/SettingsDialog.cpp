@@ -357,7 +357,7 @@ void SettingsDialog::OnStepBackwardButtonClicked()
     if (m_trayResponseHandle)
         m_trayResponseHandle->Invalidate();
 
-    const auto result = m_trayService.SendStepBackwardRequest([this](auto result)
+    m_trayResponseHandle = m_trayService.SendStepBackwardRequest([this](auto result)
     {
         OnStepResponse(result);
     });
