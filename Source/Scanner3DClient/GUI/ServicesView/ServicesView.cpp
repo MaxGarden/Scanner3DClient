@@ -45,7 +45,7 @@ void ServicesView::OnServicePaired(RemoteServices::IService& service)
 {
     const auto tryAssingService = [&service](auto*& servicePointer)
     {
-        const auto castedService = dynamic_cast<std::remove_reference<decltype(servicePointer)>::type>(&service);
+        const auto castedService = dynamic_cast<typename std::remove_reference<decltype(servicePointer)>::type>(&service);
         if (!castedService)
             return false;
 

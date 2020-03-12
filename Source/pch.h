@@ -8,6 +8,7 @@
 #ifdef __cplusplus
 
 #include "Scanner3DClient.h"
+#include <cmath>
 
 #endif //__cplusplus
 
